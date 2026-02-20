@@ -1,0 +1,6 @@
+staticSites:
+  - name: hr-report-frontend
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
