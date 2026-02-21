@@ -1,5 +1,9 @@
-staticSites:
-  - name: hr-report-frontend
+services:
+  - type: web
+    name: hr-report-frontend
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
     routes:
       - type: rewrite
         source: /*
