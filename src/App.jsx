@@ -20,7 +20,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/create-user" element={<CreateUser />} />
+        <Route path="/create" element={<CreateUser />} />
         <Route
           path="/form"
           element={

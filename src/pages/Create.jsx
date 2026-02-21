@@ -1,10 +1,13 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "../styles/create.css";
 
 const API = "https://hr-report-backend.onrender.com";
 
 export default function CreateUser() {
+  const navigate = useNavigate();
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -18,9 +21,12 @@ export default function CreateUser() {
 
   const handleSubmit = async () => {
     try {
-      await axios.post(`${API}/auth/register`, form);
+      await axios.post(`${API}/api/auth/register`, form);
+
       alert("User created successfully");
-      setForm({ name: "", email: "", password: "", role: "head" });
+
+      // 👉 redirect to login after creation
+      navigate("/login");
     } catch (err) {
       alert("Error creating user");
     }
