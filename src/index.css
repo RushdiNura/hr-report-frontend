@@ -1,6 +1,12 @@
 body {
   margin: 0;
   font-family: "Segoe UI", Roboto, Arial, sans-serif;
-  background: #f4f6f9;
-  color: #1f2937;
+  /* background: #f4f6f9;
+  color: #1f2937; */
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

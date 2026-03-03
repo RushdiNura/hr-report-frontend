@@ -1,4 +1,4 @@
-.create-user-container {
+/* .create-user-container {
   width: 420px;
   margin: 60px auto;
   padding: 30px;
@@ -45,4 +45,108 @@
 .create-user-container button:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 15px rgba(11,94,215,0.25);
+} */
+
+
+:root {
+  --primary: #0b5ed7;
+  --primary-hover: #0a58ca;
+  --slate-900: #0f172a;
+  --slate-600: #475569;
+  --slate-100: #f1f5f9;
+  --border: #d1d5db;
+}
+
+.create-user-wrapper {
+  /* min-height: 100vh; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--slate-100);
+  padding: 30px;
+}
+
+.create-user-card {
+  width: 360px;
+  padding: 35px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+.card-header h2 {
+  margin: 0;
+  font-size: 22px;
+  color: var(--slate-900);
+}
+
+.card-header p {
+  margin: 5px 0 0 0;
+  font-size: 14px;
+  color: var(--slate-600);
+}
+
+.create-user-card input,
+.create-user-card select {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: 0.2s;
+}
+
+.create-user-card input:focus,
+.create-user-card select:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(11,94,215,0.15);
+}
+
+.select-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.select-group label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--slate-600);
+}
+
+.create-user-card button {
+  width: 100%;
+  padding: 11px;
+  background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 600; /* Added weight for better look */
+  cursor: pointer;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px; /* Fixed height */
+  margin-top: 10px;
+}
+
+.create-user-card button:hover {
+  background: var(--primary-hover);
+}
+
+.create-user-card button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }

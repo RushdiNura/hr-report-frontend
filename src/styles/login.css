@@ -1,4 +1,4 @@
-.login-container {
+/* .login-container {
   width: 360px;
   margin: 120px auto;
   padding: 35px;
@@ -43,4 +43,96 @@
 .login-container button:hover {
   transform: translateY(-1px);
   box-shadow: 0 6px 15px rgba(11,94,215,0.25);
+} */
+
+
+:root {
+  --primary: #0b5ed7; /* Updated to match your specific blue */
+  --primary-hover: #0a58ca;
+  --slate-900: #0f172a;
+  --slate-600: #475569;
+  --slate-100: #f1f5f9;
+  --border: #d1d5db; /* Updated to match your border color */
+}
+
+.login-wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--slate-100);
+  padding: 20px;
+}
+
+.login-card {
+  width: 360px; /* Exact width from your request */
+  padding: 35px;
+  background: white;
+  border-radius: 12px;
+  /* Removed complex shadow to remove "floating" effect */
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 14px; /* Exact gap from your request */
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.login-logo {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+
+.login-header p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--slate-600);
+}
+
+.login-card input {
+  width: 100%;
+  padding: 11px; /* Exact padding from your request */
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: 0.2s;
+}
+
+.login-card input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(11,94,215,0.15);
+}
+
+.login-card button {
+  width: 100%;
+  padding: 11px; /* Exact padding from your request */
+  background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  margin-top: 5px;
+}
+
+.login-card button:hover {
+  background: var(--primary-hover);
+  /* Removed transform to remove "floating" effect */
+}
+
+.login-card button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }

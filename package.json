@@ -11,9 +11,19 @@
   },
   "dependencies": {
     "axios": "^1.13.5",
+    "browserslist": "^4.28.1",
+    "caniuse-lite": "^1.0.30001774",
+    "docx": "^9.5.3",
+    "framer-motion": "^12.34.3",
+    "lucide-react": "^0.575.0",
+    "prop-types": "^15.8.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-router-dom": "^7.13.0"
+    "react-hot-toast": "^2.6.0",
+    "react-router-dom": "^7.13.0",
+    "react-signature-canvas": "^1.1.0-alpha.2",
+    "react-toast": "^1.0.3",
+    "socket.io-client": "^4.8.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
