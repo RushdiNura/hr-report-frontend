@@ -181,7 +181,7 @@ export default function CreateUser() {
         <input
           name="password"
           type="password"
-          placeholder="Temporary Password"
+          placeholder="Password"
           value={form.password}
           onChange={handleChange}
           required

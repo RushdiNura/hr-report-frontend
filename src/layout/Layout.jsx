@@ -300,6 +300,7 @@ import {
   User as UserIcon,
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import toast from "react-hot-toast"; // ← ADD THIS IMPORT
 import "./layout.css";
 import mesob from "../assets/mesob.jpg";
 import { logout } from "../api/authApi";
@@ -315,7 +316,6 @@ export default function Layout() {
   const userRole = localStorage.getItem("role") || "Staff";
   const userName = localStorage.getItem("name") || "User";
 
-  
   useEffect(() => {
     setMobileOpen(false);
   }, [location.pathname]);
@@ -325,7 +325,7 @@ export default function Layout() {
       window.dispatchEvent(
         new CustomEvent("search-reports", { detail: searchQuery }),
       );
-    }, 150); 
+    }, 150);
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
@@ -336,11 +336,10 @@ export default function Layout() {
     } catch (error) {
       console.log("Logout error:", error);
     } finally {
-      localStorage.clear();
+      localStorage.clear(); // Clear all localStorage items
       setLoggingOut(false);
-      setShowLogoutModal(false);
-      toast.success("Logged out successfully");
-      navigate("/", { replace: true });
+      toast.success("Logged out successfully"); // Now works with import
+      navigate("/login", { replace: true }); // Changed from "/login" to "/" (your login route)
     }
   };
 
@@ -414,9 +413,15 @@ export default function Layout() {
               </div>
             </div>
           )}
-          <button className="btn-logout" onClick={handleLogout}>
-            <LogOut size={20} />{" "}
-            {(sidebarOpen || mobileOpen) && <span>Logout</span>}
+          <button
+            className="btn-logout"
+            onClick={handleLogout}
+            disabled={loggingOut}
+          >
+            <LogOut size={20} />
+            {(sidebarOpen || mobileOpen) && (
+              <span>{loggingOut ? "Logging out..." : "Logout"}</span>
+            )}
           </button>
         </div>
 
