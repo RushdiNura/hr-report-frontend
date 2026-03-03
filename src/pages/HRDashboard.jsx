@@ -317,6 +317,7 @@ import StatsCards from "../components/StatsCards";
 import ReportsTable from "../components/ReportsTable";
 import Spinner from "../components/Spinner";
 import "../styles/dashboard.css";
+
 export default function HRDashboard() {
   const [stats, setStats] = useState({});
   const [reports, setReports] = useState([]);
@@ -344,16 +345,15 @@ export default function HRDashboard() {
     return () => clearInterval(interval);
   }, []);
 
-  // Inside HRDashboard.js
   useEffect(() => {
     const handleSearch = (event) => {
-      // setSearchQuery should be a local state in HRDashboard
       setSearchTerm(event.detail.toLowerCase());
     };
 
     window.addEventListener("search-reports", handleSearch);
     return () => window.removeEventListener("search-reports", handleSearch);
   }, []);
+
   const filteredReports = reports.filter((report) => {
     if (!searchTerm) return true;
     return (
@@ -371,17 +371,12 @@ export default function HRDashboard() {
     );
   }
 
-  // Update displayed reports
-  // useEffect(() => {
-  //   setDisplayedReports(filteredReports.slice(0, displayCount));
-  // }, [filteredReports, displayCount]);
   return (
     <div className="dashboard-fade-in">
       <StatsCards stats={stats} />
 
       <div className="content-card">
         <div className="card-header">
-          
           <div className="header-info">
             <h3>Recent Submissions</h3>
             <p>Monitor real-time operational updates</p>
@@ -391,9 +386,7 @@ export default function HRDashboard() {
           </span>
         </div>
 
-        {loading ? (
-          <Spinner />
-        ) : filteredReports.length > 0 ? (
+        {filteredReports.length > 0 ? (
           <ReportsTable reports={filteredReports} />
         ) : (
           <div className="no-results">No reports match your search.</div>

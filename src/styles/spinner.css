@@ -7,32 +7,30 @@
 
 /* --- Base Styles for large Dashboard Spinner --- */
 
+/* Fullscreen loader for dashboard loading state */
 .fullscreen-loader {
-  /* position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;*/
-  height: 80vh; 
-  background-color: var(--slate-100); 
+  height: 70vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 9999;
 }
+
+/* Base spinner container */
 .orbit-spinner-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   width: 100%;
-  
-  /* --- ADD THIS LINE --- */
-  min-height: 300px; /* Adjust height based on your dashboard needs */
-  /* -------------------- */
+}
+
+/* Dashboard spinner size */
+.fullscreen-loader .orbit-spinner-container {
+  min-height: auto;
 }
 
 .orbit-spinner {
-  width: 50px; /* Large size for dashboard */
+  width: 50px;
   height: 50px;
   position: relative;
   display: flex;
@@ -70,7 +68,7 @@
 }
 
 /* ==========================================================
-   CONTEXT AWARE STYLING: When Spinner is inside a Button
+   BUTTON SPINNER - Preserved exactly as it was
    ========================================================== */
 button .orbit-spinner-container {
   display: flex;
@@ -79,16 +77,17 @@ button .orbit-spinner-container {
   justify-content: center;
   gap: 8px;
   width: auto;
+  min-height: auto; /* Remove min-height for buttons */
 }
 
 button .orbit-spinner {
-  width: 16px; /* Shrink size */
+  width: 16px;
   height: 16px;
 }
 
 button .orbit {
-  border-width: 2px; /* Thin border */
-  border-top-color: #ffffff; /* White color */
+  border-width: 2px;
+  border-top-color: #ffffff;
 }
 
 button .orbit:nth-child(2) {
@@ -98,9 +97,19 @@ button .orbit:nth-child(3) {
   border-bottom-color: #ffffff;
 }
 
-/* Hide the text inside a button */
 button .loading-text {
   display: none;
+}
+
+/* ==========================================================
+   DASHBOARD LOADER - Specific styling for fullscreen loader
+   ========================================================== */
+.fullscreen-loader .orbit-spinner-container {
+  min-height: auto; /* Remove the min-height that was causing issues */
+}
+
+.fullscreen-loader .loading-text {
+  display: block; /* Show text in dashboard loader */
 }
 
 /* --- Animations --- */
@@ -135,5 +144,17 @@ button .loading-text {
   }
   50% {
     opacity: 1;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .fullscreen-loader {
+    height: 50vh;
+  }
+  
+  .orbit-spinner {
+    width: 40px;
+    height: 40px;
   }
 }

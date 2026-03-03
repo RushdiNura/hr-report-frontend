@@ -18,7 +18,6 @@ export default function ReportsTable({ reports }) {
       <table className="reports-table">
         <thead>
           <tr>
-            {/* <th>#</th> */}
             <th>Qindeessaa</th>
             <th>Fooddaa</th>
             <th>Guyyaa</th>
@@ -30,7 +29,7 @@ export default function ReportsTable({ reports }) {
         <tbody>
           {reports.length === 0 ? (
             <tr>
-              <td colSpan="6" className="empty-state">
+              <td colSpan="5" className="empty-state">
                 No reports available
               </td>
             </tr>
@@ -42,8 +41,6 @@ export default function ReportsTable({ reports }) {
 
               return (
                 <tr key={r._id}>
-                  {/* <td>{i + 1}</td> */}
-
                   <td className="coordinator-cell">
                     <div className="coordinator-name">{r.coordinatorName}</div>
                   </td>
@@ -54,7 +51,7 @@ export default function ReportsTable({ reports }) {
                     </span>
                   </td>
 
-                  <td>{formatDate(r.coordinatorDate)}</td>
+                  <td className="date-cell">{formatDate(r.coordinatorDate)}</td>
 
                   <td className="text-center">{r.services?.length || 0}</td>
 
@@ -70,7 +67,7 @@ export default function ReportsTable({ reports }) {
                         <Download size={16} />
                       </a>
                     ) : (
-                      <span className="no-file">No file</span>
+                      <span className="no-file">—</span>
                     )}
                   </td>
                 </tr>

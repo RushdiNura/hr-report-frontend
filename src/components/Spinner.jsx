@@ -38,7 +38,7 @@ import "../styles/spinner.css";
 
 export default function Spinner() {
   return (
-    <div className="spinner-container">
+    <div className="orbit-spinner-container">
       <div className="orbit-spinner">
         <div className="orbit"></div>
         <div className="orbit"></div>
