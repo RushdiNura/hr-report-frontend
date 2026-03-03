@@ -88,7 +88,7 @@ import { Calendar, Layers, FileCheck } from "lucide-react";
 export default function StatsCards({ stats }) {
   const data = [
     {
-      label: "Reports Today",
+      label: "Today's Report",
       value: stats.today || 0,
       icon: Calendar,
       color: "#3b82f6",
@@ -100,7 +100,7 @@ export default function StatsCards({ stats }) {
       color: "#8b5cf6",
     },
     {
-      label: "Lifetime Total",
+      label: "Total",
       value: stats.total || 0,
       icon: FileCheck,
       color: "#10b981",

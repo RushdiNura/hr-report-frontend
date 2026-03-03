@@ -1,3 +1,107 @@
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getReports, getStats } from "../api/reportApi";
+import StatsCards from "../components/StatsCards";
+import ReportsTable from "../components/ReportsTable";
+import Spinner from "../components/Spinner";
+import "../styles/dashboard.css";
+
+export default function HRDashboard() {
+  const [stats, setStats] = useState({});
+  const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const intervalRef = useRef(null);
+
+  const loadData = async () => {
+    try {
+      const [statsRes, reportsRes] = await Promise.all([
+        getStats(),
+        getReports(),
+      ]);
+      setStats(statsRes.data);
+      setReports(reportsRes.data);
+      setLoading(false);
+    } catch (e) {
+      console.error(e);
+      setLoading(false);
+
+      if (e.response?.status === 401 || e.response?.status === 403) {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+          console.log("Stopped background auto-refresh due to auth error.");
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    loadData();
+    
+    intervalRef.current = setInterval(loadData, 5000);
+    
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleSearch = (event) => {
+
+      const value =
+        typeof event.detail === "string"
+          ? event.detail
+          : event.detail?.searchTerm;
+      setSearchTerm(value?.toLowerCase() || "");
+    };
+
+    window.addEventListener("search-reports", handleSearch);
+    return () => window.removeEventListener("search-reports", handleSearch);
+  }, []);
+
+  const filteredReports = reports.filter((report) => {
+    if (!searchTerm) return true;
+    return (
+      report.coordinatorName?.toLowerCase().includes(searchTerm) ||
+      report.qindeessaa?.toLowerCase().includes(searchTerm) ||
+      report.services?.some((s) => s.sector?.toLowerCase().includes(searchTerm))
+    );
+  });
+
+  if (loading) {
+    return (
+      <div className="fullscreen-loader">
+        <Spinner />
+      </div>
+    );
+  }
+
+  return (
+    <div className="dashboard-fade-in">
+      <StatsCards stats={stats} />
+
+      <div className="content-card">
+        <div className="card-header">
+          <div className="header-info">
+            <h3>All Submissions</h3>
+            <p>Monitor real-time operational updates</p>
+          </div>
+          <span className="count-badge">
+            {filteredReports.length} Reports Total
+          </span>
+        </div>
+
+        {filteredReports.length > 0 ? (
+          <ReportsTable reports={filteredReports} />
+        ) : (
+          <div className="no-results">No reports match your search.</div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // import { useEffect, useState } from "react";
 // import { useNavigate } from "react-router-dom";
 // import { getReports, getStats } from "../api/reportApi";
@@ -309,89 +413,3 @@
 // }
 
 // ... imports stay the same
-
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getReports, getStats } from "../api/reportApi";
-import StatsCards from "../components/StatsCards";
-import ReportsTable from "../components/ReportsTable";
-import Spinner from "../components/Spinner";
-import "../styles/dashboard.css";
-
-export default function HRDashboard() {
-  const [stats, setStats] = useState({});
-  const [reports, setReports] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const loadData = async () => {
-    try {
-      const [statsRes, reportsRes] = await Promise.all([
-        getStats(),
-        getReports(),
-      ]);
-      setStats(statsRes.data);
-      setReports(reportsRes.data);
-      setLoading(false);
-    } catch (e) {
-      console.error(e);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadData();
-    const interval = setInterval(loadData, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const handleSearch = (event) => {
-      setSearchTerm(event.detail.toLowerCase());
-    };
-
-    window.addEventListener("search-reports", handleSearch);
-    return () => window.removeEventListener("search-reports", handleSearch);
-  }, []);
-
-  const filteredReports = reports.filter((report) => {
-    if (!searchTerm) return true;
-    return (
-      report.coordinatorName?.toLowerCase().includes(searchTerm) ||
-      report.qindeessaa?.toLowerCase().includes(searchTerm) ||
-      report.services?.some((s) => s.sector?.toLowerCase().includes(searchTerm))
-    );
-  });
-
-  if (loading) {
-    return (
-      <div className="fullscreen-loader">
-        <Spinner />
-      </div>
-    );
-  }
-
-  return (
-    <div className="dashboard-fade-in">
-      <StatsCards stats={stats} />
-
-      <div className="content-card">
-        <div className="card-header">
-          <div className="header-info">
-            <h3>Recent Submissions</h3>
-            <p>Monitor real-time operational updates</p>
-          </div>
-          <span className="count-badge">
-            {filteredReports.length} Reports Total
-          </span>
-        </div>
-
-        {filteredReports.length > 0 ? (
-          <ReportsTable reports={filteredReports} />
-        ) : (
-          <div className="no-results">No reports match your search.</div>
-        )}
-      </div>
-    </div>
-  );
-}

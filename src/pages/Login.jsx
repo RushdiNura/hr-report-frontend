@@ -1,59 +1,18 @@
-// import { useState } from "react";
-// import toast from "react-hot-toast";
-// import { loginUser } from "../api/authApi";
-// import { useNavigate } from "react-router-dom";
-// import "../styles/login.css";
-// export default function Login() {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const navigate = useNavigate();
-//   const handleLogin = async () => {
-//     try {
-//       const res = await loginUser({ email, password });
-//       localStorage.setItem("token", res.data.token);
-//       localStorage.setItem("role", res.data.role);
-//       localStorage.setItem("name", res.data.name);
-//       if (res.data.role === "hr") navigate("/hr");
-//       else navigate("/form");
-//     } catch (err) {
-//       toast.error("Login failed");
-//     }
-//   };
-//   return (
-//     <div className="login-container">
-//       {" "}
-//       <h2>HR Report System</h2>{" "}
-//       <input
-//         placeholder="Email"
-//         value={email}
-//         onChange={(e) => setEmail(e.target.value)}
-//       />{" "}
-//       <input
-//         type="password"
-//         placeholder="Password"
-//         value={password}
-//         onChange={(e) => setPassword(e.target.value)}
-//       />{" "}
-//       <button onClick={handleLogin}>Login</button>{" "}
-//     </div>
-//   );
-// }
-
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { loginUser } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
-import Spinner from "../components/Spinner"; // Import your Spinner component
+import Spinner from "../components/Spinner"; 
 import "../styles/login.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false); 
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault(); // Prevent page reload on enter
+    e.preventDefault(); 
     setLoading(true);
 
     try {
@@ -106,3 +65,44 @@ export default function Login() {
     </div>
   );
 }
+
+// import { useState } from "react";
+// import toast from "react-hot-toast";
+// import { loginUser } from "../api/authApi";
+// import { useNavigate } from "react-router-dom";
+// import "../styles/login.css";
+// export default function Login() {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const navigate = useNavigate();
+//   const handleLogin = async () => {
+//     try {
+//       const res = await loginUser({ email, password });
+//       localStorage.setItem("token", res.data.token);
+//       localStorage.setItem("role", res.data.role);
+//       localStorage.setItem("name", res.data.name);
+//       if (res.data.role === "hr") navigate("/hr");
+//       else navigate("/form");
+//     } catch (err) {
+//       toast.error("Login failed");
+//     }
+//   };
+//   return (
+//     <div className="login-container">
+//       {" "}
+//       <h2>HR Report System</h2>{" "}
+//       <input
+//         placeholder="Email"
+//         value={email}
+//         onChange={(e) => setEmail(e.target.value)}
+//       />{" "}
+//       <input
+//         type="password"
+//         placeholder="Password"
+//         value={password}
+//         onChange={(e) => setPassword(e.target.value)}
+//       />{" "}
+//       <button onClick={handleLogin}>Login</button>{" "}
+//     </div>
+//   );
+// }

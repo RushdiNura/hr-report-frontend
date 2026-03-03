@@ -1,3 +1,289 @@
+import { useState, useRef } from "react";
+import SignatureCanvas from "react-signature-canvas";
+import toast from "react-hot-toast";
+import { createReport } from "../api/reportApi"; 
+import Spinner from "../components/Spinner";
+import "../styles/report.css";
+
+const emptyRow = {
+  sector: "",
+  service: "",
+  resource: "",
+  peopleServed: "",
+  employee: "",
+  date: "",
+  remark: "",
+};
+
+export default function ReportForm() {
+  const [services, setServices] = useState(
+    Array.from({ length: 5 }, () => ({ ...emptyRow })),
+  );
+
+  const [coordinatorName, setCoordinatorName] = useState("");
+  const [coordinatorDate, setCoordinatorDate] = useState("");
+  const [signature, setSignature] = useState("");
+  const [uploadedFile, setUploadedFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const sigRef = useRef(null);
+
+ 
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (coordinatorName || services[0].sector) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [coordinatorName, services]);
+
+  const handleChange = (index, field, value) => {
+    const updated = [...services];
+    updated[index][field] = value;
+    const isLastRow = index === services.length - 1;
+    const rowHasData = Object.values(updated[index]).some((v) => v !== "");
+    if (isLastRow && rowHasData) {
+      updated.push({ ...emptyRow });
+    }
+    setServices(updated);
+  };
+
+  const handleFileChange = (e) => {
+    if (e.target.files[0]) {
+      setUploadedFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const role = localStorage.getItem("role");
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        toast.error("Please login first");
+        setLoading(false);
+        return;
+      }
+
+      if (role !== "head") {
+        toast.error(
+          "Only Head users can submit reports. You are logged in as: " + role,
+        );
+        setLoading(false);
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("coordinatorName", coordinatorName);
+      formData.append("coordinatorDate", coordinatorDate);
+      formData.append("signature", signature);
+
+      if (uploadedFile) {
+        formData.append("uploadedFile", uploadedFile);
+        formData.append("services", JSON.stringify([]));
+      } else {
+        const filtered = services.filter((s) =>
+          Object.values(s).some((v) => v !== ""),
+        );
+        if (filtered.length === 0) {
+          toast.error("Maaloo odeeffannoo gabaasaa guutaa!");
+          setLoading(false);
+          return;
+        }
+        formData.append("services", JSON.stringify(filtered));
+      }
+
+      await createReport(formData);
+      toast.success("Gabaasni milkaa'inaan ergameera!");
+
+      // Reset form
+      setServices(Array.from({ length: 5 }, () => ({ ...emptyRow })));
+      setCoordinatorName("");
+      setCoordinatorDate("");
+      setSignature("");
+      setUploadedFile(null);
+      sigRef.current?.clear();
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput) fileInput.value = "";
+    } catch (error) {
+      console.error("Full error:", error);
+
+      if (error.response?.status === 401) {
+        toast.error("Authentication failed. Please login as Head user.");
+      } else if (error.response?.status === 403) {
+        toast.error("Access denied. Head role required.");
+      } else {
+        toast.error(
+          error.response?.data?.message ||
+            "Dogoggora: Gabaasa erguu hin dandeenye.",
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="report-container">
+      <h2 className="form-title">Formaatii Gabaasaa</h2>
+
+      <div className="upload-box">
+        <div className="upload-icon">📄</div>
+        <div className="upload-content">
+          <h3>Gabaasa Fayyadamu (DOCX)</h3>
+          <p>Gabaasa Wordi kanaan dura qabdan fayyadamaa</p>
+        </div>
+        <input
+          id="fileUpload"
+          type="file"
+          accept=".docx"
+          onChange={handleFileChange}
+          hidden
+        />
+        <label htmlFor="fileUpload" className="secondary-btn">
+          {uploadedFile ? "Faayila Jijjiri" : "Faayila Filadhu"}
+        </label>
+        {uploadedFile && (
+          <div className="file-info">✅ {uploadedFile.name}</div>
+        )}
+      </div>
+
+      {/* Table - Hidden if file is selected */}
+      {!uploadedFile && (
+        <div className="table-wrapper">
+          <table className="report-table">
+            <thead>
+              <tr>
+                <th style={{ width: "40px" }}>Lakk</th>
+                <th>Seektara</th>
+                <th>Tajaajila</th>
+                <th>Foddaa</th>
+                <th style={{ width: "80px" }}>Baayyina</th>
+                <th>Hojjetaa</th>
+                <th>Guyyaa</th>
+                <th>Ibsa</th>
+              </tr>
+            </thead>
+            <tbody>
+              {services.map((row, i) => (
+                <tr key={i}>
+                  <td className="row-number">{i + 1}</td>
+                  <td>
+                    <input
+                      value={row.sector}
+                      onChange={(e) =>
+                        handleChange(i, "sector", e.target.value)
+                      }
+                    />
+                  </td>
+                  <td>
+                    <input
+                      value={row.service}
+                      onChange={(e) =>
+                        handleChange(i, "service", e.target.value)
+                      }
+                    />
+                  </td>
+                  <td>
+                    <input
+                      value={row.resource}
+                      onChange={(e) =>
+                        handleChange(i, "resource", e.target.value)
+                      }
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="number"
+                      value={row.peopleServed}
+                      onChange={(e) =>
+                        handleChange(i, "peopleServed", e.target.value)
+                      }
+                    />
+                  </td>
+                  <td>
+                    <input
+                      value={row.employee}
+                      onChange={(e) =>
+                        handleChange(i, "employee", e.target.value)
+                      }
+                    />
+                  </td>
+                  <td>
+                    <input
+                      type="date"
+                      value={row.date}
+                      onChange={(e) => handleChange(i, "date", e.target.value)}
+                    />
+                  </td>
+                  <td>
+                    <input
+                      value={row.remark}
+                      onChange={(e) =>
+                        handleChange(i, "remark", e.target.value)
+                      }
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      <div className="footer-fields">
+        <div className="input-group">
+          <label>Maqaa Qindeessaa</label>
+          <input
+            value={coordinatorName}
+            onChange={(e) => setCoordinatorName(e.target.value)}
+            required
+          />
+        </div>
+        <div className="input-group">
+          <label>Guyyaa</label>
+          <input
+            type="date"
+            value={coordinatorDate}
+            onChange={(e) => setCoordinatorDate(e.target.value)}
+            required
+          />
+        </div>
+        <div className="input-group signature-group">
+          <label>Mallattoo</label>
+          <div className="signature-box">
+            <SignatureCanvas
+              ref={sigRef}
+              penColor="black"
+              canvasProps={{ className: "sigCanvas" }}
+              onEnd={() => setSignature(sigRef.current.toDataURL("image/png"))}
+            />
+            <button
+              type="button"
+              className="clear-btn"
+              onClick={() => {
+                sigRef.current.clear();
+                setSignature("");
+              }}
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" className="submit-btn" disabled={loading}>
+        {loading ? <Spinner size={18} /> : "Gabaasa Ergi"}
+      </button>
+    </form>
+  );
+}
+
 // import { useState } from "react";
 // import SignatureCanvas from "react-signature-canvas";
 // import { useRef } from "react";
@@ -374,281 +660,3 @@
 //     </div>
 //   );
 // }
-
-import { useState, useRef } from "react";
-import SignatureCanvas from "react-signature-canvas";
-import toast from "react-hot-toast";
-import { createReport } from "../api/reportApi"; // Now accepts just 'data'
-import Spinner from "../components/Spinner";
-import "../styles/report.css";
-
-const emptyRow = {
-  sector: "",
-  service: "",
-  resource: "",
-  peopleServed: "",
-  employee: "",
-  date: "",
-  remark: "",
-};
-
-export default function ReportForm() {
-  const [services, setServices] = useState(
-    Array.from({ length: 5 }, () => ({ ...emptyRow })),
-  );
-
-  const [coordinatorName, setCoordinatorName] = useState("");
-  const [coordinatorDate, setCoordinatorDate] = useState("");
-  const [signature, setSignature] = useState("");
-  const [uploadedFile, setUploadedFile] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const sigRef = useRef(null);
-
-  const handleChange = (index, field, value) => {
-    const updated = [...services];
-    updated[index][field] = value;
-    const isLastRow = index === services.length - 1;
-    const rowHasData = Object.values(updated[index]).some((v) => v !== "");
-    if (isLastRow && rowHasData) {
-      updated.push({ ...emptyRow });
-    }
-    setServices(updated);
-  };
-
-  const handleFileChange = (e) => {
-    if (e.target.files[0]) {
-      setUploadedFile(e.target.files[0]);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-
-    try {
-      // Check role first
-      const role = localStorage.getItem("role");
-      const token = localStorage.getItem("token");
-
-      if (!token) {
-        toast.error("Please login first");
-        setLoading(false);
-        return;
-      }
-
-      if (role !== "head") {
-        toast.error(
-          "Only Head users can submit reports. You are logged in as: " + role,
-        );
-        setLoading(false);
-        return;
-      }
-
-      // Rest of your form submission code...
-      const formData = new FormData();
-      formData.append("coordinatorName", coordinatorName);
-      formData.append("coordinatorDate", coordinatorDate);
-      formData.append("signature", signature);
-
-      if (uploadedFile) {
-        formData.append("uploadedFile", uploadedFile);
-        formData.append("services", JSON.stringify([]));
-      } else {
-        const filtered = services.filter((s) =>
-          Object.values(s).some((v) => v !== ""),
-        );
-        if (filtered.length === 0) {
-          toast.error("Maaloo odeeffannoo gabaasaa guutaa!");
-          setLoading(false);
-          return;
-        }
-        formData.append("services", JSON.stringify(filtered));
-      }
-
-      await createReport(formData);
-      toast.success("Gabaasni milkaa'inaan ergameera!");
-
-      // Reset form
-      setServices(Array.from({ length: 5 }, () => ({ ...emptyRow })));
-      setCoordinatorName("");
-      setCoordinatorDate("");
-      setSignature("");
-      setUploadedFile(null);
-      sigRef.current?.clear();
-      const fileInput = document.querySelector('input[type="file"]');
-      if (fileInput) fileInput.value = "";
-    } catch (error) {
-      console.error("Full error:", error);
-
-      if (error.response?.status === 401) {
-        toast.error("Authentication failed. Please login as Head user.");
-      } else if (error.response?.status === 403) {
-        toast.error("Access denied. Head role required.");
-      } else {
-        toast.error(
-          error.response?.data?.message ||
-            "Dogoggora: Gabaasa erguu hin dandeenye.",
-        );
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
-    <form onSubmit={handleSubmit} className="report-container">
-      <h2 className="form-title">Formaati Gabaasaa</h2>
-
-      {/* Upload Section - Oromic */}
-      <div className="upload-box">
-        <div className="upload-icon">📄</div>
-        <div className="upload-content">
-          <h3>Gabaasa Fayyadamu (DOCX)</h3>
-          <p>Gabaasa Wordi kanaan dura qabdan fayyadamaa</p>
-        </div>
-        <input
-          id="fileUpload"
-          type="file"
-          accept=".docx"
-          onChange={handleFileChange}
-          hidden
-        />
-        <label htmlFor="fileUpload" className="secondary-btn">
-          {uploadedFile ? "Faayila Jijjiri" : "Faayila Filadhu"}
-        </label>
-        {uploadedFile && (
-          <div className="file-info">✅ {uploadedFile.name}</div>
-        )}
-      </div>
-
-      {/* Table - Hidden if file is selected */}
-      {!uploadedFile && (
-        <div className="table-wrapper">
-          <table className="report-table">
-            <thead>
-              <tr>
-                <th style={{ width: "40px" }}>Lakk</th>
-                <th>Seektara</th>
-                <th>Tajaajila</th>
-                <th>Foddaa</th>
-                <th style={{ width: "80px" }}>Baayyina</th>
-                <th>Hojjetaa</th>
-                <th>Guyyaa</th>
-                <th>Ibsa</th>
-              </tr>
-            </thead>
-            <tbody>
-              {services.map((row, i) => (
-                <tr key={i}>
-                  <td className="row-number">{i + 1}</td>
-                  <td>
-                    <input
-                      value={row.sector}
-                      onChange={(e) =>
-                        handleChange(i, "sector", e.target.value)
-                      }
-                    />
-                  </td>
-                  <td>
-                    <input
-                      value={row.service}
-                      onChange={(e) =>
-                        handleChange(i, "service", e.target.value)
-                      }
-                    />
-                  </td>
-                  <td>
-                    <input
-                      value={row.resource}
-                      onChange={(e) =>
-                        handleChange(i, "resource", e.target.value)
-                      }
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="number"
-                      value={row.peopleServed}
-                      onChange={(e) =>
-                        handleChange(i, "peopleServed", e.target.value)
-                      }
-                    />
-                  </td>
-                  <td>
-                    <input
-                      value={row.employee}
-                      onChange={(e) =>
-                        handleChange(i, "employee", e.target.value)
-                      }
-                    />
-                  </td>
-                  <td>
-                    <input
-                      type="date"
-                      value={row.date}
-                      onChange={(e) => handleChange(i, "date", e.target.value)}
-                    />
-                  </td>
-                  <td>
-                    <input
-                      value={row.remark}
-                      onChange={(e) =>
-                        handleChange(i, "remark", e.target.value)
-                      }
-                    />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-
-      {/* Footer Fields */}
-      <div className="footer-fields">
-        <div className="input-group">
-          <label>Maqaa Qindeessaa</label>
-          <input
-            value={coordinatorName}
-            onChange={(e) => setCoordinatorName(e.target.value)}
-            required
-          />
-        </div>
-        <div className="input-group">
-          <label>Guyyaa</label>
-          <input
-            type="date"
-            value={coordinatorDate}
-            onChange={(e) => setCoordinatorDate(e.target.value)}
-            required
-          />
-        </div>
-        <div className="input-group signature-group">
-          <label>Mallattoo</label>
-          <div className="signature-box">
-            <SignatureCanvas
-              ref={sigRef}
-              penColor="black"
-              canvasProps={{ className: "sigCanvas" }}
-              onEnd={() => setSignature(sigRef.current.toDataURL("image/png"))}
-            />
-            <button
-              type="button"
-              className="clear-btn"
-              onClick={() => {
-                sigRef.current.clear();
-                setSignature("");
-              }}
-            >
-              Clear
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <button type="submit" className="submit-btn" disabled={loading}>
-        {loading ? <Spinner size={18} /> : "Gabaasa Ergi"}
-      </button>
-    </form>
-  );
-}

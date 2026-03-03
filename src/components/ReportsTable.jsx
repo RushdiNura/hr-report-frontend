@@ -5,14 +5,15 @@ import "../styles/table.css";
 export default function ReportsTable({ reports }) {
   const base = "https://hr-report-backend.onrender.com/files/";
 
-  const formatDate = (date) => {
-    if (!date) return "-";
-    return new Date(date).toLocaleDateString("en-GB", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
+const formatDate = (date) => {
+  if (!date) return "-";
+  const d = new Date(date);
+  const day = d.getDate().toString().padStart(2, "0");
+  const month = (d.getMonth() + 1).toString().padStart(2, "0");
+  const year = d.getFullYear().toString().slice(-2); // Gets last 2 digits of year
+  return `${day}/${month}/${year}`; // Returns DD/MM/YY
+};
+
 
   const handleDownload = async (fileUrl, filename) => {
     try {
@@ -30,7 +31,6 @@ export default function ReportsTable({ reports }) {
       // Convert to blob
       const blob = await response.blob();
 
-      // Create download link
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
@@ -38,7 +38,6 @@ export default function ReportsTable({ reports }) {
       document.body.appendChild(a);
       a.click();
 
-      // Clean up
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
 
@@ -55,7 +54,7 @@ export default function ReportsTable({ reports }) {
         <thead>
           <tr>
             <th>Qindeessaa</th>
-            <th>Fooddaa</th>
+            <th>Foddaa</th>
             <th>Guyyaa</th>
             <th>Tajaajila</th>
             <th>Faayila</th>

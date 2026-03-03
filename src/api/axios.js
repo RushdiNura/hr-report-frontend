@@ -45,7 +45,42 @@
 
 // export default API;
 
+// import axios from "axios";
+
+// const API = axios.create({
+//   baseURL: "https://hr-report-backend.onrender.com/api",
+// });
+
+// API.interceptors.request.use((req) => {
+//   const token = localStorage.getItem("token");
+//   if (token) {
+//     req.headers.Authorization = `Bearer ${token}`;
+//   }
+
+//   if (req.data instanceof FormData) {
+//     delete req.headers["Content-Type"];
+//   } else {
+//     req.headers["Content-Type"] = "application/json";
+//   }
+
+//   return req;
+// });
+
+// API.interceptors.response.use(
+//   (response) => response,
+//   (error) => {
+//     if (error.response?.status === 403) {
+//       localStorage.clear();
+//       window.location.href = "/";
+//     }
+//     return Promise.reject(error);
+//   },
+// );
+
+// export default API;
+
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const API = axios.create({
   baseURL: "https://hr-report-backend.onrender.com/api",
@@ -66,15 +101,35 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
+// FIXED INTERCEPTOR - No immediate redirect
+// API.js
 API.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 403) {
-      localStorage.clear();
-      window.location.href = "/";
+    if (error.response?.status === 401) {
+      // Only clear and redirect if we aren't already logged out
+      if (localStorage.getItem("token")) {
+        localStorage.clear();
+        toast.error("Session expired. Please login again.");
+        // Use window.location for a hard reset to the login page
+        window.location.href = "/"; 
+      }
     }
     return Promise.reject(error);
-  },
+  }
 );
+// API.interceptors.response.use(
+//   (response) => response,
+//   (error) => {
+   
+//     if (error.response?.status === 401 || error.response?.status === 403) {
+  
+//       localStorage.clear();
+//       toast.error("Session expired. Please login again.");
+//       console.log("Auth error - component will handle redirect");
+//     }
+//     return Promise.reject(error);
+//   },
+// );
 
 export default API;
