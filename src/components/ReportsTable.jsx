@@ -1,4 +1,5 @@
 import { Download } from "lucide-react";
+import toast from "react-hot-toast";
 import "../styles/table.css";
 
 export default function ReportsTable({ reports }) {
@@ -11,6 +12,41 @@ export default function ReportsTable({ reports }) {
       month: "short",
       day: "numeric",
     });
+  };
+
+  const handleDownload = async (fileUrl, filename) => {
+    try {
+      // Fetch with authentication
+      const response = await fetch(fileUrl, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Download failed");
+      }
+
+      // Convert to blob
+      const blob = await response.blob();
+
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+
+      // Clean up
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      toast.success("Download started!");
+    } catch (error) {
+      console.error("Download error:", error);
+      toast.error("Failed to download file");
+    }
   };
 
   return (
@@ -53,19 +89,19 @@ export default function ReportsTable({ reports }) {
 
                   <td className="date-cell">{formatDate(r.coordinatorDate)}</td>
 
-                  <td className="text-center">{r.services?.length || 0}</td>
+                  <td className="text-center">
+                    {r.services?.length || <span className="no-file">—</span>}
+                  </td>
 
                   <td>
                     {file ? (
-                      <a
-                        href={`${base}${file}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        onClick={() => handleDownload(`${base}${file}`, file)}
                         className="icon-btn"
                         title="Download"
                       >
                         <Download size={16} />
-                      </a>
+                      </button>
                     ) : (
                       <span className="no-file">—</span>
                     )}

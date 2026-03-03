@@ -75,11 +75,33 @@
   color: #1e3a8a;
   transition: 0.2s;
   text-decoration: none;
+  border: none;           /* Remove default button border */
+  outline: none;          /* Remove default button outline */
+  cursor: pointer;
+  padding: 0;             /* Remove default button padding */
+  margin: 0;              /* Remove default button margin */
+  box-shadow: none;       /* Remove any default shadow */
+}
+
+.icon-btn:focus {
+  outline: none;          /* Remove focus outline */
+  box-shadow: 0 0 0 2px rgba(30, 58, 138, 0.2); /* Optional: add subtle focus ring instead */
 }
 
 .icon-btn:hover {
-  background: #1e3a8a;
-  color: white;
+  background: #d5defa;
+  /* color: white; */
+}
+
+.icon-btn:active {
+  transform: scale(0.95); /* Optional: add slight press effect */
+}
+
+/* For the SVG inside the button */
+.icon-btn svg {
+  display: block;         /* Remove any extra spacing */
+  width: 16px;
+  height: 16px;
 }
 
 .empty-state {
@@ -159,6 +181,8 @@
     font-size: 12px;
   }
 }
+
+
 /* 
 .table-container {
   background: white;

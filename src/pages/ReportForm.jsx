@@ -426,19 +426,34 @@ export default function ReportForm() {
     setLoading(true);
 
     try {
-      // 1. Prepare FormData
+      // Check role first
+      const role = localStorage.getItem("role");
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        toast.error("Please login first");
+        setLoading(false);
+        return;
+      }
+
+      if (role !== "head") {
+        toast.error(
+          "Only Head users can submit reports. You are logged in as: " + role,
+        );
+        setLoading(false);
+        return;
+      }
+
+      // Rest of your form submission code...
       const formData = new FormData();
       formData.append("coordinatorName", coordinatorName);
       formData.append("coordinatorDate", coordinatorDate);
       formData.append("signature", signature);
 
-      // 2. Conditional logic based on file upload
       if (uploadedFile) {
-        // If file exists, only append the file
         formData.append("uploadedFile", uploadedFile);
-        formData.append("services", JSON.stringify([])); // Empty services array
+        formData.append("services", JSON.stringify([]));
       } else {
-        // If no file, append table data
         const filtered = services.filter((s) =>
           Object.values(s).some((v) => v !== ""),
         );
@@ -450,23 +465,31 @@ export default function ReportForm() {
         formData.append("services", JSON.stringify(filtered));
       }
 
-      // 3. Send using your specific API import
       await createReport(formData);
+      toast.success("Gabaasni milkaa'inaan ergameera!");
 
-      toast.success("Gabaasni milkoominaan ergameera!");
-
-      // 4. Reset form
+      // Reset form
       setServices(Array.from({ length: 5 }, () => ({ ...emptyRow })));
       setCoordinatorName("");
       setCoordinatorDate("");
       setSignature("");
       setUploadedFile(null);
-      sigRef.current.clear();
+      sigRef.current?.clear();
       const fileInput = document.querySelector('input[type="file"]');
       if (fileInput) fileInput.value = "";
     } catch (error) {
-      console.error(error);
-      toast.error("Dogoggora: Gabaasa erguu hin dandeenye.");
+      console.error("Full error:", error);
+
+      if (error.response?.status === 401) {
+        toast.error("Authentication failed. Please login as Head user.");
+      } else if (error.response?.status === 403) {
+        toast.error("Access denied. Head role required.");
+      } else {
+        toast.error(
+          error.response?.data?.message ||
+            "Dogoggora: Gabaasa erguu hin dandeenye.",
+        );
+      }
     } finally {
       setLoading(false);
     }

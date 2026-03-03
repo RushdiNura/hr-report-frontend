@@ -4,8 +4,8 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-    resolve: {
-    extensions: ['.js', '.jsx', '.json']
+  resolve: {
+    extensions: [".js", ".jsx", ".json"],
   },
   server: {
     port: 5173,
@@ -14,5 +14,7 @@ export default defineConfig({
   build: {
     outDir: "dist",
     assetsDir: "assets",
+    // This ensures public files are copied
+    copyPublicDir: true, // This is true by default
   },
 });
