@@ -83,7 +83,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 const API = axios.create({
-  baseURL: "https://hr-report-backend.onrender.com/api",
+  baseURL: "/api",
 });
 
 API.interceptors.request.use((req) => {
