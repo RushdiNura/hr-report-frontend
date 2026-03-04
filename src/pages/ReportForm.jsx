@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState,useRef, useEffect } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import toast from "react-hot-toast";
 import { createReport } from "../api/reportApi"; 
