@@ -4,6 +4,7 @@ import { getReports, getStats } from "../api/reportApi";
 import StatsCards from "../components/StatsCards";
 import ReportsTable from "../components/ReportsTable";
 import Spinner from "../components/Spinner";
+import { Search, Filter, Inbox } from "lucide-react"; // Add these icons
 import "../styles/dashboard.css";
 
 export default function HRDashboard() {
@@ -38,9 +39,9 @@ export default function HRDashboard() {
 
   useEffect(() => {
     loadData();
-    
+
     intervalRef.current = setInterval(loadData, 5000);
-    
+
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
@@ -48,7 +49,6 @@ export default function HRDashboard() {
 
   useEffect(() => {
     const handleSearch = (event) => {
-
       const value =
         typeof event.detail === "string"
           ? event.detail
@@ -88,20 +88,38 @@ export default function HRDashboard() {
             <p>Monitor real-time operational updates</p>
           </div>
           <span className="count-badge">
-            {filteredReports.length} Reports Total
+            {filteredReports.length} Report
+            {filteredReports.length !== 1 ? "s" : ""} Total
           </span>
         </div>
 
         {filteredReports.length > 0 ? (
           <ReportsTable reports={filteredReports} />
         ) : (
-          <div className="no-results">No reports match your search.</div>
+          <div className="empty-state">
+            <div className="empty-state-icon">
+              {searchTerm ? <Search size={48} /> : <Inbox size={48} />}
+            </div>
+            <h3 className="empty-state-title">
+              {searchTerm ? "No matches found" : "No reports yet"}
+            </h3>
+            <p className="empty-state-description">
+              {searchTerm
+                ? `We couldn't find any reports matching "${searchTerm}"`
+                : "Reports will appear here once they are submitted"}
+            </p>
+            {searchTerm && (
+              <div className="empty-state-hint">
+                <Filter size={14} />
+                <span>Try adjusting your search terms</span>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>
   );
 }
-
 // import { useEffect, useState } from "react";
 // import { useNavigate } from "react-router-dom";
 // import { getReports, getStats } from "../api/reportApi";
