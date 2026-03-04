@@ -1,7 +1,7 @@
-import { useState,useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import toast from "react-hot-toast";
-import { createReport } from "../api/reportApi"; 
+import { createReport } from "../api/reportApi";
 import Spinner from "../components/Spinner";
 import "../styles/report.css";
 
@@ -27,7 +27,6 @@ export default function ReportForm() {
   const [loading, setLoading] = useState(false);
   const sigRef = useRef(null);
 
- 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
       if (coordinatorName || services[0].sector) {
@@ -61,7 +60,7 @@ export default function ReportForm() {
     setLoading(true);
 
     try {
-      const role = localStorage.getItem("role");
+      const role = localStorage.getItem("role")?.trim().toLowerCase(); // ← FIX HERE
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -71,8 +70,9 @@ export default function ReportForm() {
       }
 
       if (role !== "head") {
+        // Now compares lowercase "head"
         toast.error(
-          "Only Head users can submit reports. You are logged in as: " + role,
+          `Only Head users can submit reports. You are logged in as: ${localStorage.getItem("role")}`,
         );
         setLoading(false);
         return;
