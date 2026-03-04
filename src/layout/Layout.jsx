@@ -25,7 +25,7 @@ export default function Layout() {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const userRole = localStorage.getItem("role") || "Staff";
+  const userRole = localStorage.getItem("role")?.toLocaleLowerCase() || "Staff";
   const userName = localStorage.getItem("name") || "User";
 
   useEffect(() => {

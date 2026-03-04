@@ -69,15 +69,6 @@ export default function ReportForm() {
         return;
       }
 
-      if (role !== "head") {
-        // Now compares lowercase "head"
-        toast.error(
-          `Only Head users can submit reports. You are logged in as: ${localStorage.getItem("role")}`,
-        );
-        setLoading(false);
-        return;
-      }
-
       const formData = new FormData();
       formData.append("coordinatorName", coordinatorName);
       formData.append("coordinatorDate", coordinatorDate);

@@ -101,22 +101,19 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-// FIXED INTERCEPTOR - No immediate redirect
-// API.js
 API.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Only clear and redirect if we aren't already logged out
       if (localStorage.getItem("token")) {
         localStorage.clear();
         toast.error("Session expired. Please login again.");
-        // Use window.location for a hard reset to the login page
-        window.location.href = "/"; 
       }
     }
+
+    // DO NOT CLEAR FOR 403
     return Promise.reject(error);
-  }
+  },
 );
 // API.interceptors.response.use(
 //   (response) => response,

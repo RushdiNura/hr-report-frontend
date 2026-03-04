@@ -28,10 +28,10 @@ export default function HRDashboard() {
       console.error(e);
       setLoading(false);
 
-      if (e.response?.status === 401 || e.response?.status === 403) {
+      if (e.response?.status === 401) {
         if (intervalRef.current) {
           clearInterval(intervalRef.current);
-          console.log("Stopped background auto-refresh due to auth error.");
+          console.log("Stopped auto-refresh due to expired session.");
         }
       }
     }
@@ -40,7 +40,7 @@ export default function HRDashboard() {
   useEffect(() => {
     loadData();
 
-    intervalRef.current = setInterval(loadData, 5000);
+    intervalRef.current = setInterval(loadData, 15000);
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
