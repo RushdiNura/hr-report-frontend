@@ -319,6 +319,7 @@
   border-radius: 4px;
 }
 
+
 @media (max-width: 480px) {
   .sigCanvas {
     height: 100px !important;
