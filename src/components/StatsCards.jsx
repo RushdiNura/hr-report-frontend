@@ -1,128 +1,140 @@
-// export default function StatsCards({ stats }) {
-//   return (
-//     <div className="stats-row">
-//       <div className="stat-card">
-//         <div className="stat-label">Today</div>
-//         <div className="stat-value">{stats.today || 0}</div>
-//       </div>
-
-//       <div className="stat-card">
-//         <div className="stat-label">This Month</div>
-//         <div className="stat-value">{stats.month || 0}</div>
-//       </div>
-
-//       <div className="stat-card">
-//         <div className="stat-label">Total Reports</div>
-//         <div className="stat-value">{stats.total || 0}</div>
-//       </div>
-//     </div>
-//   );
-// }
-
-// import { motion } from "framer-motion";
-// import { TrendingUp, Calendar, FileText } from "lucide-react";
+// import { Calendar, Layers, FileCheck } from "lucide-react";
 
 // export default function StatsCards({ stats }) {
-//   const cards = [
+//   const data = [
 //     {
-//       label: "Today's Reports",
+//       label: "Today's Report",
 //       value: stats.today || 0,
-//       // icon: Calendar,
-//       // trend: "+12%",
+//       icon: Calendar,
 //       color: "#3b82f6",
 //     },
 //     {
-//       label: "Monthly Reports",
+//       label: "This Month",
 //       value: stats.month || 0,
-//       // icon: TrendingUp,
-//       // trend: "+8%",
-//       color: "#10b981",
+//       icon: Layers,
+//       color: "#8b5cf6",
 //     },
 //     {
-//       label: "Total Reports",
+//       label: "Total",
 //       value: stats.total || 0,
-//       // icon: FileText,
-//       // trend: "+25%",
-//       color: "#8b5cf6",
+//       icon: FileCheck,
+//       color: "#10b981",
 //     },
 //   ];
 
 //   return (
-//     <div className="stats-row">
-//       {cards.map((card, index) => {
-//         const Icon = card.icon;
-
-//         return (
-//           <motion.div
-//             key={index}
-//             className="stat-card"
-//             initial={{ opacity: 0, y: 20 }}
-//             animate={{ opacity: 1, y: 0 }}
-//             transition={{ delay: index * 0.1 }}
-//             whileHover={{ scale: 1.02 }}
+//     <div className="stats-grid">
+//       {data.map((item, i) => (
+//         <div className="stat-card-new" key={i}>
+//           <div
+//             className="stat-icon"
+//             style={{ background: item.color + "15", color: item.color }}
 //           >
-//             {/* <div
-//               className="stat-icon-wrapper"
-//               style={{ background: `${card.color}15` }}
-//             > */}
-//               {/* <Icon size={24} color={card.color} /> */}
-//             {/* </div> */}
-
-//             <div className="stat-content">
-//               <div className="stat-label">{card.label}</div>
-//               <div className="stat-value">{card.value.toLocaleString()}</div>
-//               {/* <div className="stat-trend"> */}
-//                 {/* <TrendingUp size={14} /> */}
-//                 {/* <span>{card.trend}</span> */}
-//               {/* </div> */}
-//             </div>
-//           </motion.div>
-//         );
-//       })}
+//             <item.icon size={24} />
+//           </div>
+//           <div className="stat-content">
+//             <span className="stat-label-new">{item.label}</span>
+//             <span className="stat-value-new">{item.value}</span>
+//           </div>
+//         </div>
+//       ))}
 //     </div>
 //   );
 // }
 
-import { Calendar, Layers, FileCheck } from "lucide-react";
+import { useState } from "react";
+import { Calendar, Layers, Users, FileText } from "lucide-react";
 
 export default function StatsCards({ stats }) {
+  const [viewMode, setViewMode] = useState("people"); // "people" or "reports"
+
+  const toggleView = () => {
+    setViewMode(prev => prev === "people" ? "reports" : "people");
+  };
+
   const data = [
     {
-      label: "Today's Report",
-      value: stats.today || 0,
+      label: "Har'a",
+      peopleValue: stats.todayPeople || 0,
+      reportsValue: stats.today || 0,
+      peopleLabel: "Tajaajila Har'aa",
+      reportsLabel: "Gabaasa Har'aa",
       icon: Calendar,
       color: "#3b82f6",
     },
     {
-      label: "This Month",
-      value: stats.month || 0,
+      label: "Ji'a kana",
+      peopleValue: stats.monthPeople || 0,
+      reportsValue: stats.month || 0,
+      peopleLabel: "Tajaajila Ji'a kanaa",
+      reportsLabel: "Gabaasa Ji'a kana",
       icon: Layers,
       color: "#8b5cf6",
     },
     {
-      label: "Total",
-      value: stats.total || 0,
-      icon: FileCheck,
+      label: "Waliigala",
+      peopleValue: stats.totalPeople || 0,
+      reportsValue: stats.total || 0,
+      peopleLabel: "Tajaajila Waliigalaa",
+      reportsLabel: "Gabaasa Waliigalaa",
+      icon: Users,
       color: "#10b981",
     },
   ];
 
   return (
-    <div className="stats-grid">
-      {data.map((item, i) => (
-        <div className="stat-card-new" key={i}>
-          <div
-            className="stat-icon"
-            style={{ background: item.color + "15", color: item.color }}
+    <div className="stats-container">
+      <div className="stats-header">
+        <button 
+          className={`toggle-btn ${viewMode === "people" ? "active" : ""}`}
+          onClick={() => setViewMode("people")}
+        >
+          <Users size={16} />
+          Namoota
+        </button>
+        <button 
+          className={`toggle-btn ${viewMode === "reports" ? "active" : ""}`}
+          onClick={() => setViewMode("reports")}
+        >
+          <FileText size={16} />
+          Gabaasa
+        </button>
+      </div>
+
+      <div className="stats-grid">
+        {data.map((item, i) => (
+          <div 
+            className="stat-card-new clickable" 
+            key={i}
+            onClick={toggleView}
+            title={`Click to show ${viewMode === "people" ? "report count" : "people served"}`}
           >
-            <item.icon size={24} />
+            <div
+              className="stat-icon"
+              style={{ background: item.color + "15", color: item.color }}
+            >
+              <item.icon size={24} />
+            </div>
+            <div className="stat-content">
+              <span className="stat-label-new">
+                {viewMode === "people" ? item.peopleLabel : item.reportsLabel}
+              </span>
+              <span className="stat-value-new">
+                {viewMode === "people" 
+                  ? item.peopleValue.toLocaleString() 
+                  : item.reportsValue.toLocaleString()
+                }
+              </span>
+              <span className="stat-hint">
+                {viewMode === "people" 
+                  ? `${item.reportsValue} gabaasa` 
+                  : `${item.peopleValue} namoota`
+                }
+              </span>
+            </div>
           </div>
-          <div className="stat-content">
-            <span className="stat-label-new">{item.label}</span>
-            <span className="stat-value-new">{item.value}</span>
-          </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 }

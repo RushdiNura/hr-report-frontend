@@ -1,8 +1,288 @@
+// import { useState, useRef, useEffect } from "react";
+// import SignatureCanvas from "react-signature-canvas";
+// import toast from "react-hot-toast";
+// import { createReport } from "../api/reportApi";
+// import Spinner from "../components/Spinner";
+// import "../styles/report.css";
+
+// const emptyRow = {
+//   sector: "",
+//   service: "",
+//   resource: "",
+//   peopleServed: "",
+//   employee: "",
+//   date: "",
+//   remark: "",
+// };
+
+// export default function ReportForm() {
+//   const [services, setServices] = useState(
+//     Array.from({ length: 5 }, () => ({ ...emptyRow })),
+//   );
+
+//   const [coordinatorName, setCoordinatorName] = useState("");
+//   const [coordinatorDate, setCoordinatorDate] = useState("");
+//   const [signature, setSignature] = useState("");
+//   const [uploadedFile, setUploadedFile] = useState(null);
+//   const [loading, setLoading] = useState(false);
+//   const sigRef = useRef(null);
+
+//   useEffect(() => {
+//     const handleBeforeUnload = (e) => {
+//       if (coordinatorName || services[0].sector) {
+//         e.preventDefault();
+//         e.returnValue = "";
+//       }
+//     };
+//     window.addEventListener("beforeunload", handleBeforeUnload);
+//     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+//   }, [coordinatorName, services]);
+
+//   const handleChange = (index, field, value) => {
+//     const updated = [...services];
+//     updated[index][field] = value;
+//     const isLastRow = index === services.length - 1;
+//     const rowHasData = Object.values(updated[index]).some((v) => v !== "");
+//     if (isLastRow && rowHasData) {
+//       updated.push({ ...emptyRow });
+//     }
+//     setServices(updated);
+//   };
+
+//   const handleFileChange = (e) => {
+//     if (e.target.files[0]) {
+//       setUploadedFile(e.target.files[0]);
+//     }
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setLoading(true);
+
+//     try {
+//       const role = localStorage.getItem("role")?.trim().toLowerCase(); // ← FIX HERE
+//       const token = localStorage.getItem("token");
+
+//       if (!token) {
+//         toast.error("Please login first");
+//         setLoading(false);
+//         return;
+//       }
+
+//       const formData = new FormData();
+//       formData.append("coordinatorName", coordinatorName);
+//       formData.append("coordinatorDate", coordinatorDate);
+//       formData.append("signature", signature);
+
+//       if (uploadedFile) {
+//         formData.append("uploadedFile", uploadedFile);
+//         formData.append("services", JSON.stringify([]));
+//       } else {
+//         const filtered = services.filter((s) =>
+//           Object.values(s).some((v) => v !== ""),
+//         );
+//         if (filtered.length === 0) {
+//           toast.error("Maaloo odeeffannoo gabaasaa guutaa!");
+//           setLoading(false);
+//           return;
+//         }
+//         formData.append("services", JSON.stringify(filtered));
+//       }
+
+//       await createReport(formData);
+//       toast.success("Gabaasni milkaa'inaan ergameera!");
+
+//       // Reset form
+//       setServices(Array.from({ length: 5 }, () => ({ ...emptyRow })));
+//       setCoordinatorName("");
+//       setCoordinatorDate("");
+//       setSignature("");
+//       setUploadedFile(null);
+//       sigRef.current?.clear();
+//       const fileInput = document.querySelector('input[type="file"]');
+//       if (fileInput) fileInput.value = "";
+//     } catch (error) {
+//       console.error("Full error:", error);
+
+//       if (error.response?.status === 401) {
+//         toast.error("Authentication failed. Please login as Head user.");
+//       } else if (error.response?.status === 403) {
+//         toast.error("Access denied. Head role required.");
+//       } else {
+//         toast.error(
+//           error.response?.data?.message ||
+//             "Dogoggora: Gabaasa erguu hin dandeenye.",
+//         );
+//       }
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <form onSubmit={handleSubmit} className="report-container">
+//       <h2 className="form-title">Formaatii Gabaasaa</h2>
+
+//       <div className="upload-box">
+//         <div className="upload-icon">📄</div>
+//         <div className="upload-content">
+//           <h3>Gabaasa Fayyadamu (DOCX)</h3>
+//           <p>Gabaasa Wordi kanaan dura qabdan fayyadamaa</p>
+//         </div>
+//         <input
+//           id="fileUpload"
+//           type="file"
+//           accept=".docx"
+//           onChange={handleFileChange}
+//           hidden
+//         />
+//         <label htmlFor="fileUpload" className="secondary-btn">
+//           {uploadedFile ? "Faayila Jijjiri" : "Faayila Filadhu"}
+//         </label>
+//         {uploadedFile && (
+//           <div className="file-info">✅ {uploadedFile.name}</div>
+//         )}
+//       </div>
+
+//       {/* Table - Hidden if file is selected */}
+//       {!uploadedFile && (
+//         <div className="table-wrapper">
+//           <table className="report-table">
+//             <thead>
+//               <tr>
+//                 <th style={{ width: "40px" }}>Lakk</th>
+//                 <th>Seektara</th>
+//                 <th>Tajaajila</th>
+//                 <th>Foddaa</th>
+//                 <th style={{ width: "80px" }}>Baayyina</th>
+//                 <th>Hojjetaa</th>
+//                 <th>Guyyaa</th>
+//                 <th>Ibsa</th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {services.map((row, i) => (
+//                 <tr key={i}>
+//                   <td className="row-number">{i + 1}</td>
+//                   <td>
+//                     <input
+//                       value={row.sector}
+//                       onChange={(e) =>
+//                         handleChange(i, "sector", e.target.value)
+//                       }
+//                     />
+//                   </td>
+//                   <td>
+//                     <input
+//                       value={row.service}
+//                       onChange={(e) =>
+//                         handleChange(i, "service", e.target.value)
+//                       }
+//                     />
+//                   </td>
+//                   <td>
+//                     <input
+//                       value={row.resource}
+//                       onChange={(e) =>
+//                         handleChange(i, "resource", e.target.value)
+//                       }
+//                     />
+//                   </td>
+//                   <td>
+//                     <input
+//                       type="number"
+//                       value={row.peopleServed}
+//                       onChange={(e) =>
+//                         handleChange(i, "peopleServed", e.target.value)
+//                       }
+//                     />
+//                   </td>
+//                   <td>
+//                     <input
+//                       value={row.employee}
+//                       onChange={(e) =>
+//                         handleChange(i, "employee", e.target.value)
+//                       }
+//                     />
+//                   </td>
+//                   <td>
+//                     <input
+//                       type="date"
+//                       value={row.date}
+//                       onChange={(e) => handleChange(i, "date", e.target.value)}
+//                     />
+//                   </td>
+//                   <td>
+//                     <input
+//                       value={row.remark}
+//                       onChange={(e) =>
+//                         handleChange(i, "remark", e.target.value)
+//                       }
+//                     />
+//                   </td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+//       )}
+
+//       <div className="footer-fields">
+//         <div className="input-group">
+//           <label>Maqaa Qindeessaa</label>
+//           <input
+//             value={coordinatorName}
+//             onChange={(e) => setCoordinatorName(e.target.value)}
+//             required
+//           />
+//         </div>
+//         <div className="input-group">
+//           <label>Guyyaa</label>
+//           <input
+//             type="date"
+//             value={coordinatorDate}
+//             onChange={(e) => setCoordinatorDate(e.target.value)}
+//             required
+//           />
+//         </div>
+//         <div className="input-group signature-group">
+//           <label>Mallattoo</label>
+//           <div className="signature-box">
+//             <SignatureCanvas
+//               ref={sigRef}
+//               penColor="black"
+//               canvasProps={{ className: "sigCanvas" }}
+//               onEnd={() => setSignature(sigRef.current.toDataURL("image/png"))}
+//             />
+//             <button
+//               type="button"
+//               className="clear-btn"
+//               onClick={() => {
+//                 sigRef.current.clear();
+//                 setSignature("");
+//               }}
+//             >
+//               Clear
+//             </button>
+//           </div>
+//         </div>
+//       </div>
+
+//       <button type="submit" className="submit-btn" disabled={loading}>
+//         {loading ? <Spinner size={18} /> : "Gabaasa Ergi"}
+//       </button>
+//     </form>
+//   );
+// }
+
+
+
 import { useState, useRef, useEffect } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import toast from "react-hot-toast";
 import { createReport } from "../api/reportApi";
 import Spinner from "../components/Spinner";
+import mammoth from "mammoth"; // Add this
 import "../styles/report.css";
 
 const emptyRow = {
@@ -19,12 +299,14 @@ export default function ReportForm() {
   const [services, setServices] = useState(
     Array.from({ length: 5 }, () => ({ ...emptyRow })),
   );
-
+  const [extractedTotal, setExtractedTotal] = useState(null);
+  const [extractedPeopleCounts, setExtractedPeopleCounts] = useState([]); // Store individual counts
   const [coordinatorName, setCoordinatorName] = useState("");
   const [coordinatorDate, setCoordinatorDate] = useState("");
   const [signature, setSignature] = useState("");
   const [uploadedFile, setUploadedFile] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [parsingFile, setParsingFile] = useState(false);
   const sigRef = useRef(null);
 
   useEffect(() => {
@@ -38,6 +320,87 @@ export default function ReportForm() {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [coordinatorName, services]);
 
+  // Function to extract ONLY "Baayyina" column values from DOCX
+  const extractBaayyinaValues = async (file) => {
+    setParsingFile(true);
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+
+      // Extract text from DOCX
+      const result = await mammoth.extractRawText({ arrayBuffer });
+      const text = result.value;
+
+      console.log("Extracted text:", text); // Debug: see what we're getting
+
+      // METHOD 1: Look for numbers in a table structure
+      // This regex looks for numbers that appear after "Baayyina" or in a column format
+      const baayyinaPattern = /Baayyina[:\s]*(\d+)/gi;
+      const matches = [...text.matchAll(baayyinaPattern)];
+
+      let extractedNumbers = [];
+
+      if (matches.length > 0) {
+        // Found numbers with "Baayyina" label
+        extractedNumbers = matches.map((m) => parseInt(m[1], 10));
+      } else {
+        // METHOD 2: If your DOCX has a table, numbers might be in a specific column
+        // This looks for lines that might contain the people count
+        const lines = text.split("\n");
+
+        // Look for lines that have numbers and might be the Baayyina column
+        // This assumes the Baayyina column is the 5th column in your table
+        for (const line of lines) {
+          const cells = line.split("\t"); // Tables often use tabs
+          if (cells.length >= 5) {
+            // Try to get the 5th column (Baayyina column)
+            const possibleNumber = parseInt(cells[4]?.trim(), 10);
+            if (
+              !isNaN(possibleNumber) &&
+              possibleNumber > 0 &&
+              possibleNumber < 1000
+            ) {
+              extractedNumbers.push(possibleNumber);
+            }
+          }
+        }
+
+        // METHOD 3: Look for any numbers in the document that are likely people counts
+        if (extractedNumbers.length === 0) {
+          const allNumbers = text.match(/\b(\d+)\b/g) || [];
+          extractedNumbers = allNumbers
+            .map((num) => parseInt(num, 10))
+            .filter(
+              (num) =>
+                num > 0 && num < 1000 && num !== new Date().getFullYear(),
+            ); // Filter out years
+        }
+      }
+
+      console.log("Extracted Baayyina values:", extractedNumbers);
+
+      // Calculate total
+      const total = extractedNumbers.reduce((sum, num) => sum + num, 0);
+
+      setExtractedPeopleCounts(extractedNumbers);
+      setExtractedTotal(total);
+
+      if (extractedNumbers.length > 0) {
+        toast.success(
+          `Found ${extractedNumbers.length} entries, total: ${total} people`,
+        );
+      } else {
+        toast.warning("Could not find Baayyina values in the file");
+      }
+    } catch (error) {
+      console.error("Error parsing DOCX:", error);
+      toast.error("Failed to parse the DOCX file");
+      setExtractedTotal(null);
+      setExtractedPeopleCounts([]);
+    } finally {
+      setParsingFile(false);
+    }
+  };
+
   const handleChange = (index, field, value) => {
     const updated = [...services];
     updated[index][field] = value;
@@ -49,9 +412,13 @@ export default function ReportForm() {
     setServices(updated);
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     if (e.target.files[0]) {
-      setUploadedFile(e.target.files[0]);
+      const file = e.target.files[0];
+      setUploadedFile(file);
+
+      // Automatically parse the file to extract Baayyina values
+      await extractBaayyinaValues(file);
     }
   };
 
@@ -60,7 +427,7 @@ export default function ReportForm() {
     setLoading(true);
 
     try {
-      const role = localStorage.getItem("role")?.trim().toLowerCase(); // ← FIX HERE
+      const role = localStorage.getItem("role")?.trim().toLowerCase();
       const token = localStorage.getItem("token");
 
       if (!token) {
@@ -76,6 +443,17 @@ export default function ReportForm() {
 
       if (uploadedFile) {
         formData.append("uploadedFile", uploadedFile);
+
+        // Add the extracted total to the form data
+        // This requires a backend field to store it
+        if (extractedTotal !== null) {
+          formData.append("extractedTotal", extractedTotal);
+          formData.append(
+            "extractedPeopleCounts",
+            JSON.stringify(extractedPeopleCounts),
+          );
+        }
+
         formData.append("services", JSON.stringify([]));
       } else {
         const filtered = services.filter((s) =>
@@ -98,6 +476,8 @@ export default function ReportForm() {
       setCoordinatorDate("");
       setSignature("");
       setUploadedFile(null);
+      setExtractedTotal(null);
+      setExtractedPeopleCounts([]);
       sigRef.current?.clear();
       const fileInput = document.querySelector('input[type="file"]');
       if (fileInput) fileInput.value = "";
@@ -140,7 +520,20 @@ export default function ReportForm() {
           {uploadedFile ? "Faayila Jijjiri" : "Faayila Filadhu"}
         </label>
         {uploadedFile && (
-          <div className="file-info">✅ {uploadedFile.name}</div>
+          <div className="file-info">
+            <span>✅ {uploadedFile.name}</span>
+            {parsingFile && <Spinner size={16} />}
+            {extractedTotal !== null && !parsingFile && (
+              <span className="extracted-badge">
+                📊 Baay'ina waliigala: <strong>{extractedTotal}</strong>
+                {extractedPeopleCounts.length > 0 && (
+                  <span className="extracted-detail">
+                    ({extractedPeopleCounts.join(" + ")})
+                  </span>
+                )}
+              </span>
+            )}
+          </div>
         )}
       </div>
 
@@ -268,12 +661,17 @@ export default function ReportForm() {
         </div>
       </div>
 
-      <button type="submit" className="submit-btn" disabled={loading}>
+      <button
+        type="submit"
+        className="submit-btn"
+        disabled={loading || parsingFile}
+      >
         {loading ? <Spinner size={18} /> : "Gabaasa Ergi"}
       </button>
     </form>
   );
 }
+
 
 // import { useState } from "react";
 // import SignatureCanvas from "react-signature-canvas";

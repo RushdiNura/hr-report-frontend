@@ -182,6 +182,19 @@
   }
 }
 
+/* Add to your table.css */
+.people-count-badge {
+  display: inline-block;
+  min-width: 32px;
+  padding: 4px 8px;
+  background: #e0f2fe;
+  color: #0369a1;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  text-align: center;
+}
+
 
 /* 
 .table-container {

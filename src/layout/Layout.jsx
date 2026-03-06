@@ -48,7 +48,7 @@ export default function Layout() {
     if (!token && currentPath !== "/") {
       navigate("/", { replace: true });
     }
-  }, [location.pathname]); 
+  }, [location.pathname]);
 
   const handleLogout = async () => {
     setLoggingOut(true);
@@ -147,12 +147,14 @@ export default function Layout() {
         </div>
 
         {!mobileOpen && (
-          <button
-            className="sidebar-trigger-pro"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-          >
-            <ChevronRight size={14} className={sidebarOpen ? "flip" : ""} />
-          </button>
+          <div className="sidebar-toggle-container">
+            <button
+              className="sidebar-trigger-pro"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+              <ChevronRight size={14} className={sidebarOpen ? "flip" : ""} />
+            </button>
+          </div>
         )}
       </aside>
 

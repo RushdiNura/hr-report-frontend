@@ -412,6 +412,82 @@
   }
 }
 
+/* Stats Container */
+.stats-container {
+  margin-bottom: 30px;
+}
+
+/* Stats Header with Toggle Buttons */
+.stats-header {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 30px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.toggle-btn:hover {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.toggle-btn.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: white;
+}
+
+.toggle-btn.active svg {
+  color: white;
+}
+
+/* Make stat cards clickable */
+.stat-card-new.clickable {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card-new.clickable:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+/* Hint text showing the other value */
+.stat-hint {
+  font-size: 11px;
+  color: #94a3b8;
+  display: block;
+  margin-top: 2px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .stats-header {
+    justify-content: center;
+  }
+  
+  .stat-card-new {
+    padding: 16px;
+  }
+  
+  .stat-value-new {
+    font-size: 20px;
+  }
+}
 /* 
 .dashboard-page {
   display: flex;
