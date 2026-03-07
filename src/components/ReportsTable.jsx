@@ -146,34 +146,57 @@ export default function ReportsTable({ reports }) {
     }, 0);
   };
 
- const handleDownload = async (downloadUrl, filename) => {
-   try {
-     // Cloudinary URLs can be used directly with token in header
-     const response = await fetch(downloadUrl, {
-       headers: {
-         Authorization: `Bearer ${localStorage.getItem("token")}`,
-       },
-     });
+const handleDownload = async (fileUrl, filename) => {
+  try {
+    const token = localStorage.getItem("token");
 
-     if (!response.ok) throw new Error("Download failed");
+    // Ensure filename has .docx extension
+    if (!filename.toLowerCase().endsWith(".docx")) {
+      filename = filename + ".docx";
+    }
 
-     const blob = await response.blob();
-     const url = window.URL.createObjectURL(blob);
-     const a = document.createElement("a");
-     a.href = url;
-     a.download = filename;
-     document.body.appendChild(a);
-     a.click();
+    console.log("Downloading:", { fileUrl, filename }); // Debug
 
-     window.URL.revokeObjectURL(url);
-     document.body.removeChild(a);
-     toast.success("Download started!");
-   } catch (error) {
-     console.error("Download error:", error);
-     toast.error("Failed to download file");
-   }
- };
+    const response = await fetch(fileUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
+    if (!response.ok) {
+      throw new Error(`Download failed: ${response.status}`);
+    }
+
+    const blob = await response.blob();
+
+    // Verify it's a docx file
+    if (
+      blob.type &&
+      !blob.type.includes("openxmlformats") &&
+      !blob.type.includes("octet-stream")
+    ) {
+      console.warn("Unexpected file type:", blob.type);
+    }
+
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+
+    // Cleanup
+    setTimeout(() => {
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+    }, 100);
+
+    toast.success(`Downloading started`);
+  } catch (error) {
+    console.error("Download error:", error);
+    toast.error("Failed to download file");
+  }
+};
   return (
     <div className="table-container">
       <table className="reports-table">
@@ -239,11 +262,14 @@ export default function ReportsTable({ reports }) {
                   </td>
 
                   <td>
-                    {r.downloadUrl ? (
+                    {r.generatedFileUrl ? (
                       <button
-                        onClick={() =>
-                          handleDownload(r.downloadUrl, r.generatedFileName)
-                        }
+                        onClick={() => {
+                          // Use the original filename from the database
+                          const filename =
+                            r.generatedFileName || `gabaasa-${r._id}.docx`;
+                          handleDownload(r.generatedFileUrl, filename);
+                        }}
                         className="icon-btn"
                         title="Download"
                       >
