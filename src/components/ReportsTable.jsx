@@ -146,82 +146,31 @@ export default function ReportsTable({ reports }) {
     }, 0);
   };
 
- const handleDownload = async (filename) => {
-   const token = localStorage.getItem("token");
-
-   if (!token) {
-     toast.error("Your session has expired. Please login again.");
-     setTimeout(() => navigate("/"), 2000);
-     return;
-   }
-
-   const loadingToast = toast.loading("Downloading...");
-
+ const handleDownload = async (downloadUrl, filename) => {
    try {
-     const downloadUrl = `https://hr-report-backend.onrender.com/api/download/${filename}`;
-
+     // Cloudinary URLs can be used directly with token in header
      const response = await fetch(downloadUrl, {
        headers: {
-         Authorization: `Bearer ${token}`,
+         Authorization: `Bearer ${localStorage.getItem("token")}`,
        },
      });
 
-     // Handle specific HTTP status codes
-     if (response.status === 401) {
-       toast.dismiss(loadingToast);
-       toast.error("Your session has expired. Please login again.");
-       localStorage.clear();
-       setTimeout(() => navigate("/"), 2000);
-       return;
-     }
-
-     if (response.status === 403) {
-       toast.dismiss(loadingToast);
-       toast.error("You don't have permission to download this file.");
-       return;
-     }
-
-     if (response.status === 404) {
-       toast.dismiss(loadingToast);
-       toast.error("File not found on server.");
-       return;
-     }
-
-     if (!response.ok) {
-       throw new Error(`Download failed (${response.status})`);
-     }
+     if (!response.ok) throw new Error("Download failed");
 
      const blob = await response.blob();
+     const url = window.URL.createObjectURL(blob);
+     const a = document.createElement("a");
+     a.href = url;
+     a.download = filename;
+     document.body.appendChild(a);
+     a.click();
 
-     // Check if blob is valid
-     if (blob.size === 0) {
-       throw new Error("Downloaded file is empty");
-     }
-
-     const blobUrl = window.URL.createObjectURL(blob);
-     const link = document.createElement("a");
-     link.href = blobUrl;
-     link.download = filename;
-     document.body.appendChild(link);
-     link.click();
-
-     setTimeout(() => {
-       document.body.removeChild(link);
-       window.URL.revokeObjectURL(blobUrl);
-     }, 100);
-
-     toast.dismiss(loadingToast);
+     window.URL.revokeObjectURL(url);
+     document.body.removeChild(a);
      toast.success("Download started!");
    } catch (error) {
      console.error("Download error:", error);
-     toast.dismiss(loadingToast);
-
-     // Give user specific error message
-     if (error.message.includes("Failed to fetch")) {
-       toast.error("Network error. Please check your connection.");
-     } else {
-       toast.error(error.message || "Failed to download file");
-     }
+     toast.error("Failed to download file");
    }
  };
 
@@ -290,9 +239,11 @@ export default function ReportsTable({ reports }) {
                   </td>
 
                   <td>
-                    {file ? (
+                    {r.downloadUrl ? (
                       <button
-                        onClick={() => handleDownload(`${base}${file}`, file)}
+                        onClick={() =>
+                          handleDownload(r.downloadUrl, r.generatedFileName)
+                        }
                         className="icon-btn"
                         title="Download"
                       >
