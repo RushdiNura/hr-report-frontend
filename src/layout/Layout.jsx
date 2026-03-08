@@ -7,7 +7,9 @@ import {
   LogOut,
   ChevronRight,
   Menu,
+  UserCog,
   X,
+  Users,
   Search,
   User as UserIcon,
 } from "lucide-react";
@@ -68,10 +70,13 @@ export default function Layout() {
     userRole === "hr"
       ? [
           { path: "/hr", label: "Dashboard", icon: LayoutDashboard },
-          { path: "/signup", label: "User Management", icon: UserPlus },
-          // { path: "/heads", label: "Head Management", icon: UserPlus },
+          { path: "/signup", label: "Create Qindeessaa", icon: UserPlus },
+          { path: "/heads", label: "Head Management", icon: UserCog },
         ]
-      : [{ path: "/form", label: "New Report", icon: PlusCircle }];
+      : [
+          { path: "/form", label: "New Report", icon: PlusCircle },
+          { path: "/employees", label: "Hojjataa", icon: Users },
+        ];
 
   return (
     <div className="app-shell">

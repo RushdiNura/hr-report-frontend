@@ -17,24 +17,13 @@
 }
 
 @media (min-width: 1200px) {
-  .report-container {
-    max-width: 95%;
-    margin: 30px auto;
-  }
+  .report-container { max-width: 95%; margin: 30px auto; }
 }
-
 @media (min-width: 1400px) {
-  .report-container {
-    max-width: 90%;
-    margin: 30px auto;
-  }
+  .report-container { max-width: 90%; margin: 30px auto; }
 }
-
 @media (min-width: 1600px) {
-  .report-container {
-    max-width: 1400px;
-    margin: 30px auto;
-  }
+  .report-container { max-width: 1400px; margin: 30px auto; }
 }
 
 .form-title {
@@ -45,7 +34,7 @@
   margin-bottom: 30px;
 }
 
-/* Upload Box - Responsive */
+/* Upload Box */
 .upload-box {
   display: flex;
   flex-wrap: wrap;
@@ -63,29 +52,19 @@
     flex-direction: column;
     align-items: flex-start;
   }
-  
   .upload-box .secondary-btn {
     margin-left: 0;
     width: 90%;
   }
 }
 
-.upload-icon {
-  font-size: 30px;
-  flex-shrink: 0;
-}
-
-.upload-content {
-  flex: 1;
-  min-width: 200px;
-}
-
+.upload-icon { font-size: 30px; flex-shrink: 0; }
+.upload-content { flex: 1; min-width: 200px; }
 .upload-content h3 {
   font-size: clamp(14px, 3vw, 16px);
   margin: 0;
   color: var(--slate-900);
 }
-
 .upload-content p {
   font-size: clamp(12px, 2.5vw, 14px);
   margin: 4px 0 0;
@@ -112,22 +91,24 @@
   }
 }
 
-.secondary-btn:hover {
-  background: var(--slate-100);
-}
+.secondary-btn:hover { background: var(--slate-100); }
 
 .file-info {
   margin-top: 10px;
-  padding: 8px;
+  padding: 8px 12px;
   background: #ecfdf5;
-  border-radius: 6px;
+  border-radius: 8px;
   color: #047857;
   font-size: 13px;
   width: 100%;
   word-break: break-word;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
-/* Table Style - Fixed for Laptop */
+/* Table Styles */
 .table-wrapper {
   overflow-x: auto;
   width: 100%;
@@ -144,53 +125,37 @@
   min-width: 700px;
 }
 
-/* Laptop-specific fixes (1024px - 1399px) */
+/* Laptop-specific fixes */
 @media (min-width: 1024px) and (max-width: 1399px) {
   .report-table {
-    min-width: 100%; /* Remove minimum width on laptop */
+    min-width: 100%;
     width: 100%;
-    table-layout: auto; /* Let columns adjust */
+    table-layout: auto;
   }
-  
   .report-table th,
   .report-table td {
-    white-space: normal; /* Allow text to wrap */
+    white-space: normal;
     word-break: break-word;
   }
-  
-  .report-table input {
-    min-width: 60px; /* Smaller minimum for inputs */
-    width: 100%;
+  .report-table input,
+  .foddaa-display {
+    min-width: 50px;
+    padding: 6px;
+    font-size: 13px;
   }
-  
-  /* Adjust column widths proportionally */
-  .report-table th:nth-child(1) { width: 5%; }  /* Lakk */
-  .report-table th:nth-child(2) { width: 15%; } /* Seektara */
-  .report-table th:nth-child(3) { width: 15%; } /* Tajaajila */
-  .report-table th:nth-child(4) { width: 12%; } /* Foddaa */
-  .report-table th:nth-child(5) { width: 8%; }  /* Baayyina */
-  .report-table th:nth-child(6) { width: 12%; } /* Hojjetaa */
-  .report-table th:nth-child(7) { width: 12%; } /* Guyyaa */
-  .report-table th:nth-child(8) { width: 21%; } /* Ibsa */
+  .report-table th:nth-child(1) { width: 5%; }
+  .report-table th:nth-child(2) { width: 15%; }
+  .report-table th:nth-child(3) { width: 15%; }
+  .report-table th:nth-child(4) { width: 10%; }
+  .report-table th:nth-child(5) { width: 10%; }
+  .report-table th:nth-child(6) { width: 12%; }
+  .report-table th:nth-child(7) { width: 12%; }
+  .report-table th:nth-child(8) { width: 21%; }
 }
 
-@media (max-width: 1023px) {
-  .report-table {
-    min-width: 700px;
-  }
-}
-
-@media (max-width: 768px) {
-  .report-table {
-    min-width: 600px;
-  }
-}
-
-@media (max-width: 480px) {
-  .report-table {
-    min-width: 500px;
-  }
-}
+@media (max-width: 1023px) { .report-table { min-width: 700px; } }
+@media (max-width: 768px) { .report-table { min-width: 600px; } }
+@media (max-width: 480px) { .report-table { min-width: 500px; } }
 
 .report-table th {
   background: var(--slate-100);
@@ -203,60 +168,102 @@
   white-space: nowrap;
 }
 
-@media (min-width: 1024px) and (max-width: 1399px) {
-  .report-table th {
-    white-space: normal;
-    padding: 10px 8px;
-    font-size: 12px;
-  }
-}
-
 .report-table td {
-  padding: 6px;
+  padding: 8px 6px;
   border-bottom: 1px solid var(--border);
   background: white;
 }
 
-.report-table input {
+/* Unified Input Styles - Applies to all inputs and foddaa display */
+.report-table input,
+.foddaa-display,
+.sector-select,
+.employee-select {
   width: 100%;
   min-width: 80px;
-  padding: 8px;
+  padding: 8px 12px;
   border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 14px;
   transition: 0.2s;
   box-sizing: border-box;
-}
-
-@media (min-width: 1024px) and (max-width: 1399px) {
-  .report-table input {
-    min-width: 50px;
-    padding: 6px;
-    font-size: 13px;
-  }
+  height: 38px; /* Uniform height */
 }
 
 @media (max-width: 768px) {
-  .report-table input {
-    padding: 6px;
+  .report-table input,
+  .foddaa-display,
+  .sector-select,
+  .employee-select {
+    padding: 6px 10px;
     font-size: 13px;
+    min-width: 60px;
+    height: 34px;
   }
 }
 
-.report-table input:focus {
+/* Focus states */
+.report-table input:focus,
+.sector-select:focus,
+.employee-select:focus {
   border-color: var(--primary);
   outline: none;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
+/* Foddaa Display - Matches inputs exactly */
+.foddaa-display {
+  background-color: var(--slate-100);
+  color: var(--slate-900);
+  font-weight: 500;
+  text-align: center;
+  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  /* Subtle indication it's auto-filled */
+  border-left: 3px solid var(--primary);
+}
+
+/* Select dropdown styling */
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.sector-select,
+.employee-select {
+  background-color: white;
+  appearance: none;
+  cursor: pointer;
+  padding-right: 32px;
+}
+
+.sector-select:hover,
+.employee-select:hover {
+  border-color: var(--primary);
+}
+
+.select-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  pointer-events: none;
+}
+
+/* Row number */
 .row-number {
   text-align: center;
   color: var(--slate-600);
   font-weight: 500;
   font-size: 14px;
+  padding: 8px 6px;
 }
 
-/* Footer Fields - Responsive Grid */
+/* Footer Fields */
 .footer-fields {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -291,7 +298,22 @@
   box-sizing: border-box;
 }
 
-/* Signature - Responsive */
+/* Coordinator field styling */
+.coordinator-field {
+  background-color: #f0f9ff !important;
+  border-left: 4px solid var(--primary) !important;
+  font-weight: 500 !important;
+}
+
+.field-hint {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* Signature */
 .signature-group {
   grid-column: span 1;
 }
@@ -318,7 +340,6 @@
   border: 1px solid var(--border);
   border-radius: 4px;
 }
-
 
 @media (max-width: 480px) {
   .sigCanvas {
@@ -372,37 +393,7 @@
   cursor: not-allowed;
 }
 
-/* Responsive Padding */
-@media (max-width: 768px) {
-  .report-container {
-    margin: 10px;
-    padding: 16px;
-  }
-}
-
-@media (max-width: 480px) {
-  .report-container {
-    margin: 5px;
-    padding: 12px;
-  }
-}
-
-/* Add to your report.css */
-.file-info {
-  margin-top: 10px;
-  padding: 8px 12px;
-  background: #ecfdf5;
-  border-radius: 8px;
-  color: #047857;
-  font-size: 13px;
-  width: 100%;
-  word-break: break-word;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
+/* Extracted badge */
 .extracted-info {
   background: #dbeafe;
   color: #1e40af;
@@ -417,20 +408,24 @@
 .extracted-info strong {
   font-size: 14px;
 }
-.extracted-badge {
-  background: #dbeafe;
-  color: #1e40af;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: 8px;
+
+/* Placeholder styling */
+input::placeholder {
+  color: #94a3b8;
+  font-size: 13px;
 }
 
-.extracted-detail {
-  color: #64748b;
-  font-size: 11px;
-  margin-left: 4px;
+/* Responsive container padding */
+@media (max-width: 768px) {
+  .report-container {
+    margin: 10px;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .report-container {
+    margin: 5px;
+    padding: 12px;
+  }
 }

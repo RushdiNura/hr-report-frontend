@@ -2,17 +2,19 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { loginUser } from "../api/authApi";
 import { useNavigate } from "react-router-dom";
-import Spinner from "../components/Spinner"; 
+import Spinner from "../components/Spinner";
+import { Eye, EyeOff } from "lucide-react"; // Import Icons
 import "../styles/login.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false); 
+  const [showPassword, setShowPassword] = useState(false); // New state
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     setLoading(true);
 
     try {
@@ -38,7 +40,6 @@ export default function Login() {
       <form className="login-card" onSubmit={handleLogin}>
         <div className="login-header">
           <div className="login-logo">HR Report System</div>
-          {/* <h2>Sign in</h2> */}
           <p>Enter your credentials to access the system</p>
         </div>
 
@@ -50,13 +51,24 @@ export default function Login() {
           required
         />
 
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        {/* Password Wrapper */}
+        <div className="password-input-wrapper">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+          <button
+            type="button"
+            className="password-toggle-btn"
+            onClick={() => setShowPassword(!showPassword)}
+            tabIndex="-1"
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
 
         <button type="submit" disabled={loading}>
           {loading ? <Spinner size={20} /> : "Sign in"}
@@ -65,44 +77,3 @@ export default function Login() {
     </div>
   );
 }
-
-// import { useState } from "react";
-// import toast from "react-hot-toast";
-// import { loginUser } from "../api/authApi";
-// import { useNavigate } from "react-router-dom";
-// import "../styles/login.css";
-// export default function Login() {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const navigate = useNavigate();
-//   const handleLogin = async () => {
-//     try {
-//       const res = await loginUser({ email, password });
-//       localStorage.setItem("token", res.data.token);
-//       localStorage.setItem("role", res.data.role);
-//       localStorage.setItem("name", res.data.name);
-//       if (res.data.role === "hr") navigate("/hr");
-//       else navigate("/form");
-//     } catch (err) {
-//       toast.error("Login failed");
-//     }
-//   };
-//   return (
-//     <div className="login-container">
-//       {" "}
-//       <h2>HR Report System</h2>{" "}
-//       <input
-//         placeholder="Email"
-//         value={email}
-//         onChange={(e) => setEmail(e.target.value)}
-//       />{" "}
-//       <input
-//         type="password"
-//         placeholder="Password"
-//         value={password}
-//         onChange={(e) => setPassword(e.target.value)}
-//       />{" "}
-//       <button onClick={handleLogin}>Login</button>{" "}
-//     </div>
-//   );
-// }

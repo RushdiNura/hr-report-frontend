@@ -1,0 +1,542 @@
+:root {
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
+  --slate-900: #0f172a;
+  --slate-600: #475569;
+  --slate-100: #f1f5f9;
+  --border: #e2e8f0;
+}
+
+.report-container {
+  max-width: 100%;
+  margin: 20px;
+  padding: 24px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+}
+
+@media (min-width: 1200px) {
+  .report-container {
+    max-width: 95%;
+    margin: 30px auto;
+  }
+}
+
+@media (min-width: 1400px) {
+  .report-container {
+    max-width: 90%;
+    margin: 30px auto;
+  }
+}
+
+@media (min-width: 1600px) {
+  .report-container {
+    max-width: 1400px;
+    margin: 30px auto;
+  }
+}
+
+.form-title {
+  text-align: center;
+  font-size: clamp(20px, 4vw, 24px);
+  font-weight: 700;
+  color: var(--slate-900);
+  margin-bottom: 30px;
+}
+
+/* Upload Box - Responsive */
+.upload-box {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 15px;
+  padding: 20px;
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  background: #f8fafc;
+  margin-bottom: 30px;
+}
+
+@media (max-width: 640px) {
+  .upload-box {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .upload-box .secondary-btn {
+    margin-left: 0;
+    width: 90%;
+  }
+}
+
+.upload-icon {
+  font-size: 30px;
+  flex-shrink: 0;
+}
+
+.upload-content {
+  flex: 1;
+  min-width: 200px;
+}
+
+.upload-content h3 {
+  font-size: clamp(14px, 3vw, 16px);
+  margin: 0;
+  color: var(--slate-900);
+}
+
+.upload-content p {
+  font-size: clamp(12px, 2.5vw, 14px);
+  margin: 4px 0 0;
+  color: var(--slate-600);
+}
+
+.secondary-btn {
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--slate-900);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: 0.2s;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .secondary-btn {
+    white-space: normal;
+    width: 100%;
+  }
+}
+
+.secondary-btn:hover {
+  background: var(--slate-100);
+}
+
+.file-info {
+  margin-top: 10px;
+  padding: 8px;
+  background: #ecfdf5;
+  border-radius: 6px;
+  color: #047857;
+  font-size: 13px;
+  width: 100%;
+  word-break: break-word;
+}
+
+/* Table Style - Fixed for Laptop */
+.table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border-radius: 8px;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 20px;
+  min-width: 700px;
+}
+
+/* Laptop-specific fixes (1024px - 1399px) */
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .report-table {
+    min-width: 100%; /* Remove minimum width on laptop */
+    width: 100%;
+    table-layout: auto; /* Let columns adjust */
+  }
+  
+  .report-table th,
+  .report-table td {
+    white-space: normal; /* Allow text to wrap */
+    word-break: break-word;
+  }
+  
+  .report-table input {
+    min-width: 60px; /* Smaller minimum for inputs */
+    width: 100%;
+  }
+  
+  /* Adjust column widths proportionally */
+  .report-table th:nth-child(1) { width: 5%; }  /* Lakk */
+  .report-table th:nth-child(2) { width: 15%; } /* Seektara */
+  .report-table th:nth-child(3) { width: 15%; } /* Tajaajila */
+  .report-table th:nth-child(4) { width: 10%; } /* Foddaa */
+  .report-table th:nth-child(5) { width: 10%; }  /* Baayyina */
+  .report-table th:nth-child(6) { width: 12%; } /* Hojjetaa */
+  .report-table th:nth-child(7) { width: 12%; } /* Guyyaa */
+  .report-table th:nth-child(8) { width: 21%; } /* Ibsa */
+}
+
+@media (max-width: 1023px) {
+  .report-table {
+    min-width: 700px;
+  }
+}
+
+@media (max-width: 768px) {
+  .report-table {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 480px) {
+  .report-table {
+    min-width: 500px;
+  }
+}
+
+.report-table th {
+  background: var(--slate-100);
+  color: var(--slate-600);
+  padding: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .report-table th {
+    white-space: normal;
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+}
+
+.report-table td {
+  padding: 6px;
+  border-bottom: 1px solid var(--border);
+  background: white;
+}
+
+.report-table input {
+  width: 100%;
+  min-width: 80px;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  transition: 0.2s;
+  box-sizing: border-box;
+}
+
+@media (min-width: 1024px) and (max-width: 1399px) {
+  .report-table input {
+    min-width: 50px;
+    padding: 6px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 768px) {
+  .report-table input {
+    padding: 6px;
+    font-size: 13px;
+  }
+}
+
+.report-table input:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.row-number {
+  text-align: center;
+  color: var(--slate-600);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Footer Fields - Responsive Grid */
+.footer-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+
+@media (max-width: 768px) {
+  .footer-fields {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.input-group {
+  width: 100%;
+}
+
+.input-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--slate-600);
+  margin-bottom: 8px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+/* Signature - Responsive */
+.signature-group {
+  grid-column: span 1;
+}
+
+@media (min-width: 1024px) {
+  .signature-group {
+    grid-column: span 3;
+  }
+}
+
+.signature-box {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sigCanvas {
+  width: 100% !important;
+  height: 120px !important;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+
+@media (max-width: 480px) {
+  .sigCanvas {
+    height: 100px !important;
+  }
+}
+
+.clear-btn {
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid #fee2e2;
+  color: #ef4444;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  align-self: flex-start;
+}
+
+@media (max-width: 480px) {
+  .clear-btn {
+    align-self: stretch;
+  }
+}
+
+.clear-btn:hover {
+  background: #fef2f2;
+}
+
+/* Submit Button */
+.submit-btn {
+  display: block;
+  width: 100%;
+  margin-top: 30px;
+  padding: 14px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: clamp(14px, 4vw, 16px);
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.submit-btn:hover {
+  background: var(--primary-hover);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Responsive Padding */
+@media (max-width: 768px) {
+  .report-container {
+    margin: 10px;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .report-container {
+    margin: 5px;
+    padding: 12px;
+  }
+}
+
+/* Add to your report.css */
+.file-info {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: #ecfdf5;
+  border-radius: 8px;
+  color: #047857;
+  font-size: 13px;
+  width: 100%;
+  word-break: break-word;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.extracted-info {
+  background: #dbeafe;
+  color: #1e40af;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.extracted-info strong {
+  font-size: 14px;
+}
+/* Foddaa read-only field styling */
+.foddaa-readonly {
+  background-color: #f3f4f6 !important;
+  color: #1f2937 !important;
+  font-weight: 500 !important;
+  cursor: not-allowed !important;
+  border-color: #d1d5db !important;
+}
+
+.foddaa-readonly:focus {
+  outline: none !important;
+  border-color: #d1d5db !important;
+  box-shadow: none !important;
+}
+
+/* Select wrapper for custom dropdown styling */
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.sector-select,.employee-select {
+  width: 100%;
+  padding: 10px 12px;
+  padding-right: 32px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: white;
+  appearance: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.sector-select:hover {
+  border-color: #3b82f6;
+}
+
+.sector-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.select-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #64748b;
+  pointer-events: none;
+}
+
+/* Foddaa field styling */
+.foddaa-field {
+  background-color: var(--slate-100) !important;
+  color: #1e3a8a !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  /* border: 2px solid #3b82f6 !important; */
+  border-radius: 8px !important;
+  width: 100%;
+  padding: 8px 12px;
+  cursor: not-allowed !important;
+}
+
+/* Input placeholders */
+input::placeholder {
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+/* Table cell padding */
+.report-table td {
+  padding: 8px 6px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sector-select ,.employee-select{
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+  
+  .foddaa-field {
+    font-size: 14px;
+    padding: 6px 8px;
+  }
+}
+/* Coordinator field styling */
+.coordinator-field {
+  background-color: #f0f9ff !important;
+  border-left: 4px solid #3b82f6 !important;
+  font-weight: 500 !important;
+}
+
+.field-hint {
+  display: block;
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* Foddaa display - looks like typed text but not editable */
+.foddaa-display {
+  width: 100%;
+  padding: 10px 12px;
+  background-color: #f9fafb;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1e293b;
+  font-weight: 500;
+  text-align: center;
+  cursor: default;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Optional: Add a subtle left border to indicate it's auto-filled */
+.foddaa-display {
+  border-left: 3px solid #3b82f6;
+}

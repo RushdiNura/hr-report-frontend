@@ -1,50 +1,3 @@
-/* .login-container {
-  width: 360px;
-  margin: 120px auto;
-  padding: 35px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.login-container h2 {
-  text-align: center;
-  margin-bottom: 10px;
-  color: #0b5ed7;
-}
-
-.login-container input {
-  padding: 11px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 14px;
-}
-
-.login-container input:focus {
-  border-color: #0b5ed7;
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(11,94,215,0.15);
-}
-
-.login-container button {
-  padding: 11px;
-  background: linear-gradient(135deg, #0b5ed7, #0a58ca);
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 15px;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.login-container button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 15px rgba(11,94,215,0.25);
-} */
-
 
 :root {
   --primary: #0b5ed7; /* Updated to match your specific blue */
@@ -135,4 +88,44 @@
 .login-card button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+/* Password Field Container */
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+/* Ensure text doesn't overlap the icon */
+.password-input-wrapper input {
+  padding-right: 45px !important;
+}
+
+/* Professional Toggle Button */
+.password-toggle-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  width: auto !important;
+  min-height: auto !important;
+  color: var(--slate-600);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+  z-index: 2;
+}
+
+.password-toggle-btn:hover {
+  color: var(--primary);
+}
+
+.password-toggle-btn:focus {
+  outline: none;
 }

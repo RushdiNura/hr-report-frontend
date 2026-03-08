@@ -5,6 +5,8 @@ import ReportForm from "./pages/ReportForm";
 import HRDashboard from "./pages/HRDashboard";
 import Signup from "./pages/Signup";
 import Layout from "./layout/Layout";
+import HeadManagement from "./pages/HeadManagement";
+import EmployeeManagement from "./pages/EmployeeManagement";
 
 function PrivateRoute({ children, role }) {
   const token = localStorage.getItem("token");
@@ -29,6 +31,7 @@ export default function App() {
           }
         >
           <Route path="/hr" element={<HRDashboard />} />
+          <Route path="/heads" element={<HeadManagement />} />
           <Route path="/signup" element={<Signup />} />
         </Route>
 
@@ -40,6 +43,7 @@ export default function App() {
           }
         >
           <Route path="/form" element={<ReportForm />} />
+          <Route path="/employees" element={<EmployeeManagement />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

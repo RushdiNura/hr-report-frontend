@@ -1,9 +1,15 @@
+// without quindeessaa name
 // import { useState, useRef, useEffect } from "react";
 // import SignatureCanvas from "react-signature-canvas";
 // import toast from "react-hot-toast";
 // import { createReport } from "../api/reportApi";
 // import Spinner from "../components/Spinner";
+// import mammoth from "mammoth";
+// import { ChevronDown } from "lucide-react";
+// import axios from "axios"; // Add this import
 // import "../styles/report.css";
+
+// const API = "https://hr-report-backend.onrender.com/api"; // Add this constant
 
 // const emptyRow = {
 //   sector: "",
@@ -15,17 +21,68 @@
 //   remark: "",
 // };
 
+// // 12 Sectors (Seektara) options
+// const SECTOR_OPTIONS = [
+//   { value: "agriculture", label: "Qonnaa " },
+//   { value: "education", label: "Barnoota " },
+//   { value: "health", label: "Fayyaa " },
+//   { value: "water", label: "Bishaan " },
+//   { value: "road", label: "Daandii" },
+//   { value: "electricity", label: "Elektirika" },
+//   { value: "trade", label: "Daldalaa" },
+//   { value: "finance", label: "Faayinaansi" },
+//   { value: "youth", label: "Dargaggoota " },
+//   { value: "women", label: "Dubartootaa " },
+//   { value: "security", label: "Nageenya " },
+//   { value: "administration", label: "Bulchiinsa" },
+// ];
+
 // export default function ReportForm() {
 //   const [services, setServices] = useState(
 //     Array.from({ length: 5 }, () => ({ ...emptyRow })),
 //   );
-
+//   const [extractedTotal, setExtractedTotal] = useState(null);
+//   const [extractedPeopleCounts, setExtractedPeopleCounts] = useState([]);
 //   const [coordinatorName, setCoordinatorName] = useState("");
 //   const [coordinatorDate, setCoordinatorDate] = useState("");
 //   const [signature, setSignature] = useState("");
 //   const [uploadedFile, setUploadedFile] = useState(null);
 //   const [loading, setLoading] = useState(false);
+//   const [parsingFile, setParsingFile] = useState(false);
+//   const [foddaaNumber, setFoddaaNumber] = useState("");
+//   const [employees, setEmployees] = useState([]);
 //   const sigRef = useRef(null);
+
+//   // Fetch employees on component mount
+//   useEffect(() => {
+//     const fetchEmployees = async () => {
+//       try {
+//         const token = localStorage.getItem("token");
+//         console.log("Fetching employees with token:", token); // Debug log
+
+//         const response = await axios.get(`${API}/employees`, {
+//           headers: { Authorization: `Bearer ${token}` },
+//         });
+
+//         console.log("Employees fetched:", response.data); // Debug log
+//         setEmployees(response.data);
+//       } catch (error) {
+//         console.error("Error fetching employees:", error);
+//         toast.error("Failed to load employees");
+//       }
+//     };
+
+//     fetchEmployees();
+//   }, []);
+
+//   // Get user's foddaa from localStorage and extract just the number
+//   useEffect(() => {
+//     const foddaa = localStorage.getItem("qindeessaa");
+//     if (foddaa) {
+//       const number = foddaa.replace("foddaa", "");
+//       setFoddaaNumber(number);
+//     }
+//   }, []);
 
 //   useEffect(() => {
 //     const handleBeforeUnload = (e) => {
@@ -38,6 +95,70 @@
 //     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
 //   }, [coordinatorName, services]);
 
+//   const extractBaayyinaValues = async (file) => {
+//     setParsingFile(true);
+//     try {
+//       const arrayBuffer = await file.arrayBuffer();
+//       const result = await mammoth.extractRawText({ arrayBuffer });
+//       const text = result.value;
+
+//       const baayyinaPattern = /Baayyina[:\s]*(\d+)/gi;
+//       const matches = [...text.matchAll(baayyinaPattern)];
+
+//       let extractedNumbers = [];
+
+//       if (matches.length > 0) {
+//         extractedNumbers = matches.map((m) => parseInt(m[1], 10));
+//       } else {
+//         const lines = text.split("\n");
+
+//         for (const line of lines) {
+//           const cells = line.split("\t");
+//           if (cells.length >= 5) {
+//             const possibleNumber = parseInt(cells[4]?.trim(), 10);
+//             if (
+//               !isNaN(possibleNumber) &&
+//               possibleNumber > 0 &&
+//               possibleNumber < 1000
+//             ) {
+//               extractedNumbers.push(possibleNumber);
+//             }
+//           }
+//         }
+
+//         if (extractedNumbers.length === 0) {
+//           const allNumbers = text.match(/\b(\d+)\b/g) || [];
+//           extractedNumbers = allNumbers
+//             .map((num) => parseInt(num, 10))
+//             .filter(
+//               (num) =>
+//                 num > 0 && num < 1000 && num !== new Date().getFullYear(),
+//             );
+//         }
+//       }
+
+//       const total = extractedNumbers.reduce((sum, num) => sum + num, 0);
+
+//       setExtractedPeopleCounts(extractedNumbers);
+//       setExtractedTotal(total);
+
+//       if (extractedNumbers.length > 0) {
+//         toast.success(
+//           `Found ${extractedNumbers.length} entries, total: ${total} people`,
+//         );
+//       } else {
+//         toast.warning("Could not find Baayyina values in the file");
+//       }
+//     } catch (error) {
+//       console.error("Error parsing DOCX:", error);
+//       toast.error("Failed to parse the DOCX file");
+//       setExtractedTotal(null);
+//       setExtractedPeopleCounts([]);
+//     } finally {
+//       setParsingFile(false);
+//     }
+//   };
+
 //   const handleChange = (index, field, value) => {
 //     const updated = [...services];
 //     updated[index][field] = value;
@@ -49,9 +170,11 @@
 //     setServices(updated);
 //   };
 
-//   const handleFileChange = (e) => {
+//   const handleFileChange = async (e) => {
 //     if (e.target.files[0]) {
-//       setUploadedFile(e.target.files[0]);
+//       const file = e.target.files[0];
+//       setUploadedFile(file);
+//       await extractBaayyinaValues(file);
 //     }
 //   };
 
@@ -60,7 +183,7 @@
 //     setLoading(true);
 
 //     try {
-//       const role = localStorage.getItem("role")?.trim().toLowerCase(); // ← FIX HERE
+//       const role = localStorage.getItem("role")?.trim().toLowerCase();
 //       const token = localStorage.getItem("token");
 
 //       if (!token) {
@@ -76,6 +199,15 @@
 
 //       if (uploadedFile) {
 //         formData.append("uploadedFile", uploadedFile);
+
+//         if (extractedTotal !== null) {
+//           formData.append("extractedTotal", extractedTotal);
+//           formData.append(
+//             "extractedPeopleCounts",
+//             JSON.stringify(extractedPeopleCounts),
+//           );
+//         }
+
 //         formData.append("services", JSON.stringify([]));
 //       } else {
 //         const filtered = services.filter((s) =>
@@ -86,18 +218,25 @@
 //           setLoading(false);
 //           return;
 //         }
-//         formData.append("services", JSON.stringify(filtered));
+
+//         const servicesWithFoddaa = filtered.map((service) => ({
+//           ...service,
+//           foddaa: foddaaNumber,
+//         }));
+
+//         formData.append("services", JSON.stringify(servicesWithFoddaa));
 //       }
 
 //       await createReport(formData);
 //       toast.success("Gabaasni milkaa'inaan ergameera!");
 
-//       // Reset form
 //       setServices(Array.from({ length: 5 }, () => ({ ...emptyRow })));
 //       setCoordinatorName("");
 //       setCoordinatorDate("");
 //       setSignature("");
 //       setUploadedFile(null);
+//       setExtractedTotal(null);
+//       setExtractedPeopleCounts([]);
 //       sigRef.current?.clear();
 //       const fileInput = document.querySelector('input[type="file"]');
 //       if (fileInput) fileInput.value = "";
@@ -140,7 +279,20 @@
 //           {uploadedFile ? "Faayila Jijjiri" : "Faayila Filadhu"}
 //         </label>
 //         {uploadedFile && (
-//           <div className="file-info">✅ {uploadedFile.name}</div>
+//           <div className="file-info">
+//             <span>✅ {uploadedFile.name}</span>
+//             {parsingFile && <Spinner size={16} />}
+//             {extractedTotal !== null && !parsingFile && (
+//               <span className="extracted-badge">
+//                 📊 Baay'ina waliigala: <strong>{extractedTotal}</strong>
+//                 {extractedPeopleCounts.length > 0 && (
+//                   <span className="extracted-detail">
+//                     ({extractedPeopleCounts.join(" + ")})
+//                   </span>
+//                 )}
+//               </span>
+//             )}
+//           </div>
 //         )}
 //       </div>
 
@@ -165,12 +317,23 @@
 //                 <tr key={i}>
 //                   <td className="row-number">{i + 1}</td>
 //                   <td>
-//                     <input
-//                       value={row.sector}
-//                       onChange={(e) =>
-//                         handleChange(i, "sector", e.target.value)
-//                       }
-//                     />
+//                     <div className="select-wrapper">
+//                       <select
+//                         value={row.sector}
+//                         onChange={(e) =>
+//                           handleChange(i, "sector", e.target.value)
+//                         }
+//                         className="sector-select"
+//                       >
+//                         <option value="">Seektara Filadhu</option>
+//                         {SECTOR_OPTIONS.map((option) => (
+//                           <option key={option.value} value={option.value}>
+//                             {option.label}
+//                           </option>
+//                         ))}
+//                       </select>
+//                       <ChevronDown className="select-icon" size={16} />
+//                     </div>
 //                   </td>
 //                   <td>
 //                     <input
@@ -178,14 +341,16 @@
 //                       onChange={(e) =>
 //                         handleChange(i, "service", e.target.value)
 //                       }
+//                       // placeholder="Tajaajila"
 //                     />
 //                   </td>
 //                   <td>
 //                     <input
-//                       value={row.resource}
-//                       onChange={(e) =>
-//                         handleChange(i, "resource", e.target.value)
-//                       }
+//                       type="text"
+//                       value={foddaaNumber || "1"}
+//                       readOnly
+//                       disabled
+//                       className="foddaa-field"
 //                     />
 //                   </td>
 //                   <td>
@@ -195,15 +360,28 @@
 //                       onChange={(e) =>
 //                         handleChange(i, "peopleServed", e.target.value)
 //                       }
+//                       // placeholder="0"
+//                       min="0"
 //                     />
 //                   </td>
 //                   <td>
-//                     <input
-//                       value={row.employee}
-//                       onChange={(e) =>
-//                         handleChange(i, "employee", e.target.value)
-//                       }
-//                     />
+//                     <div className="select-wrapper">
+//                       <select
+//                         value={row.employee}
+//                         onChange={(e) =>
+//                           handleChange(i, "employee", e.target.value)
+//                         }
+//                         className="employee-select"
+//                       >
+//                         <option value="">Hojjataa Filadhu</option>
+//                         {employees.map((emp) => (
+//                           <option key={emp._id} value={emp.name}>
+//                             {emp.name}
+//                           </option>
+//                         ))}
+//                       </select>
+//                       <ChevronDown className="select-icon" size={16} />
+//                     </div>
 //                   </td>
 //                   <td>
 //                     <input
@@ -218,6 +396,7 @@
 //                       onChange={(e) =>
 //                         handleChange(i, "remark", e.target.value)
 //                       }
+//                       // placeholder="Ibsa"
 //                     />
 //                   </td>
 //                 </tr>
@@ -234,6 +413,7 @@
 //             value={coordinatorName}
 //             onChange={(e) => setCoordinatorName(e.target.value)}
 //             required
+//             // placeholder="Maqaa guutaa"
 //           />
 //         </div>
 //         <div className="input-group">
@@ -268,46 +448,105 @@
 //         </div>
 //       </div>
 
-//       <button type="submit" className="submit-btn" disabled={loading}>
+//       <button
+//         type="submit"
+//         className="submit-btn"
+//         disabled={loading || parsingFile}
+//       >
 //         {loading ? <Spinner size={18} /> : "Gabaasa Ergi"}
 //       </button>
 //     </form>
 //   );
 // }
 
-
-
 import { useState, useRef, useEffect } from "react";
 import SignatureCanvas from "react-signature-canvas";
 import toast from "react-hot-toast";
 import { createReport } from "../api/reportApi";
 import Spinner from "../components/Spinner";
-import mammoth from "mammoth"; // Add this
+import mammoth from "mammoth";
+import { ChevronDown } from "lucide-react";
+import axios from "axios";
 import "../styles/report.css";
 
+const API = "https://hr-report-backend.onrender.com/api";
+
+// Updated emptyRow - removed resource field
 const emptyRow = {
   sector: "",
   service: "",
-  resource: "",
   peopleServed: "",
   employee: "",
   date: "",
   remark: "",
 };
 
+// 12 Sectors (Seektara) options
+const SECTOR_OPTIONS = [
+  { value: "agriculture", label: "Qonnaa" },
+  { value: "education", label: "Barnoota" },
+  { value: "health", label: "Fayyaa" },
+  { value: "water", label: "Bishaan" },
+  { value: "road", label: "Daandii" },
+  { value: "electricity", label: "Elektirika" },
+  { value: "trade", label: "Daldalaa" },
+  { value: "finance", label: "Faayinaansi" },
+  { value: "youth", label: "Dargaggoota" },
+  { value: "women", label: "Dubartootaa" },
+  { value: "security", label: "Nageenya" },
+  { value: "administration", label: "Bulchiinsa" },
+];
+
 export default function ReportForm() {
   const [services, setServices] = useState(
     Array.from({ length: 5 }, () => ({ ...emptyRow })),
   );
   const [extractedTotal, setExtractedTotal] = useState(null);
-  const [extractedPeopleCounts, setExtractedPeopleCounts] = useState([]); // Store individual counts
+  const [extractedPeopleCounts, setExtractedPeopleCounts] = useState([]);
   const [coordinatorName, setCoordinatorName] = useState("");
   const [coordinatorDate, setCoordinatorDate] = useState("");
   const [signature, setSignature] = useState("");
   const [uploadedFile, setUploadedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [parsingFile, setParsingFile] = useState(false);
+  const [foddaaNumber, setFoddaaNumber] = useState("");
+  const [employees, setEmployees] = useState([]);
   const sigRef = useRef(null);
+
+  // Auto-fill coordinator name with head's name from localStorage
+  useEffect(() => {
+    const headName = localStorage.getItem("name");
+    if (headName) {
+      setCoordinatorName(headName);
+    }
+  }, []);
+
+  // Fetch employees on component mount
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(`${API}/employees`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setEmployees(response.data);
+      } catch (error) {
+        console.error("Error fetching employees:", error);
+        toast.error("Failed to load employees");
+      }
+    };
+
+    fetchEmployees();
+  }, []);
+
+  // Get user's foddaa from localStorage and extract just the number
+  useEffect(() => {
+    const foddaa = localStorage.getItem("qindeessaa");
+    if (foddaa) {
+      const number = foddaa.replace("foddaa", "");
+      setFoddaaNumber(number);
+    }
+  }, []);
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
@@ -320,39 +559,26 @@ export default function ReportForm() {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [coordinatorName, services]);
 
-  // Function to extract ONLY "Baayyina" column values from DOCX
   const extractBaayyinaValues = async (file) => {
     setParsingFile(true);
     try {
       const arrayBuffer = await file.arrayBuffer();
-
-      // Extract text from DOCX
       const result = await mammoth.extractRawText({ arrayBuffer });
       const text = result.value;
 
-      console.log("Extracted text:", text); // Debug: see what we're getting
-
-      // METHOD 1: Look for numbers in a table structure
-      // This regex looks for numbers that appear after "Baayyina" or in a column format
       const baayyinaPattern = /Baayyina[:\s]*(\d+)/gi;
       const matches = [...text.matchAll(baayyinaPattern)];
 
       let extractedNumbers = [];
 
       if (matches.length > 0) {
-        // Found numbers with "Baayyina" label
         extractedNumbers = matches.map((m) => parseInt(m[1], 10));
       } else {
-        // METHOD 2: If your DOCX has a table, numbers might be in a specific column
-        // This looks for lines that might contain the people count
         const lines = text.split("\n");
 
-        // Look for lines that have numbers and might be the Baayyina column
-        // This assumes the Baayyina column is the 5th column in your table
         for (const line of lines) {
-          const cells = line.split("\t"); // Tables often use tabs
+          const cells = line.split("\t");
           if (cells.length >= 5) {
-            // Try to get the 5th column (Baayyina column)
             const possibleNumber = parseInt(cells[4]?.trim(), 10);
             if (
               !isNaN(possibleNumber) &&
@@ -364,7 +590,6 @@ export default function ReportForm() {
           }
         }
 
-        // METHOD 3: Look for any numbers in the document that are likely people counts
         if (extractedNumbers.length === 0) {
           const allNumbers = text.match(/\b(\d+)\b/g) || [];
           extractedNumbers = allNumbers
@@ -372,13 +597,10 @@ export default function ReportForm() {
             .filter(
               (num) =>
                 num > 0 && num < 1000 && num !== new Date().getFullYear(),
-            ); // Filter out years
+            );
         }
       }
 
-      console.log("Extracted Baayyina values:", extractedNumbers);
-
-      // Calculate total
       const total = extractedNumbers.reduce((sum, num) => sum + num, 0);
 
       setExtractedPeopleCounts(extractedNumbers);
@@ -416,8 +638,6 @@ export default function ReportForm() {
     if (e.target.files[0]) {
       const file = e.target.files[0];
       setUploadedFile(file);
-
-      // Automatically parse the file to extract Baayyina values
       await extractBaayyinaValues(file);
     }
   };
@@ -444,8 +664,6 @@ export default function ReportForm() {
       if (uploadedFile) {
         formData.append("uploadedFile", uploadedFile);
 
-        // Add the extracted total to the form data
-        // This requires a backend field to store it
         if (extractedTotal !== null) {
           formData.append("extractedTotal", extractedTotal);
           formData.append(
@@ -464,7 +682,22 @@ export default function ReportForm() {
           setLoading(false);
           return;
         }
-        formData.append("services", JSON.stringify(filtered));
+
+        const servicesForDocx = filtered.map((service) => ({
+          sector: service.sector,
+          service: service.service,
+          resource: String(
+            foddaaNumber || localStorage.getItem("qindeessaa") || "1",
+          ),
+          peopleServed: service.peopleServed,
+          employee: service.employee,
+          date: service.date,
+          remark: service.remark,
+        }));
+
+        console.log("Sending to backend:", servicesForDocx); // Debug
+
+        formData.append("services", JSON.stringify(servicesForDocx));
       }
 
       await createReport(formData);
@@ -472,7 +705,7 @@ export default function ReportForm() {
 
       // Reset form
       setServices(Array.from({ length: 5 }, () => ({ ...emptyRow })));
-      setCoordinatorName("");
+      setCoordinatorName(localStorage.getItem("name") || "");
       setCoordinatorDate("");
       setSignature("");
       setUploadedFile(null);
@@ -557,30 +790,45 @@ export default function ReportForm() {
               {services.map((row, i) => (
                 <tr key={i}>
                   <td className="row-number">{i + 1}</td>
+
+                  {/* Seektara - Select */}
                   <td>
-                    <input
-                      value={row.sector}
-                      onChange={(e) =>
-                        handleChange(i, "sector", e.target.value)
-                      }
-                    />
+                    <div className="select-wrapper">
+                      <select
+                        value={row.sector}
+                        onChange={(e) =>
+                          handleChange(i, "sector", e.target.value)
+                        }
+                        className="sector-select"
+                      >
+                        <option value="">Seektara Filadhu</option>
+                        {SECTOR_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown className="select-icon" size={16} />
+                    </div>
                   </td>
+
+                  {/* Tajaajila - Input */}
                   <td>
                     <input
                       value={row.service}
                       onChange={(e) =>
                         handleChange(i, "service", e.target.value)
                       }
+                      placeholder="Tajaajila"
                     />
                   </td>
+
+                  {/* Foddaa - Display only (auto-filled) */}
                   <td>
-                    <input
-                      value={row.resource}
-                      onChange={(e) =>
-                        handleChange(i, "resource", e.target.value)
-                      }
-                    />
+                    <div className="foddaa-display">{foddaaNumber || "1"}</div>
                   </td>
+
+                  {/* Baayyina - Input */}
                   <td>
                     <input
                       type="number"
@@ -588,16 +836,33 @@ export default function ReportForm() {
                       onChange={(e) =>
                         handleChange(i, "peopleServed", e.target.value)
                       }
+                      placeholder="0"
+                      min="0"
                     />
                   </td>
+
+                  {/* Hojjetaa - Select */}
                   <td>
-                    <input
-                      value={row.employee}
-                      onChange={(e) =>
-                        handleChange(i, "employee", e.target.value)
-                      }
-                    />
+                    <div className="select-wrapper">
+                      <select
+                        value={row.employee}
+                        onChange={(e) =>
+                          handleChange(i, "employee", e.target.value)
+                        }
+                        className="employee-select"
+                      >
+                        <option value="">Hojjataa Filadhu</option>
+                        {employees.map((emp) => (
+                          <option key={emp._id} value={emp.name}>
+                            {emp.name}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown className="select-icon" size={16} />
+                    </div>
                   </td>
+
+                  {/* Guyyaa - Input */}
                   <td>
                     <input
                       type="date"
@@ -605,12 +870,15 @@ export default function ReportForm() {
                       onChange={(e) => handleChange(i, "date", e.target.value)}
                     />
                   </td>
+
+                  {/* Ibsa - Input */}
                   <td>
                     <input
                       value={row.remark}
                       onChange={(e) =>
                         handleChange(i, "remark", e.target.value)
                       }
+                      placeholder="Ibsa"
                     />
                   </td>
                 </tr>
@@ -627,8 +895,12 @@ export default function ReportForm() {
             value={coordinatorName}
             onChange={(e) => setCoordinatorName(e.target.value)}
             required
+            placeholder="Maqaa guutaa"
+            className="coordinator-field"
           />
+          <small className="field-hint">Auto-filled with your name</small>
         </div>
+
         <div className="input-group">
           <label>Guyyaa</label>
           <input
@@ -638,6 +910,7 @@ export default function ReportForm() {
             required
           />
         </div>
+
         <div className="input-group signature-group">
           <label>Mallattoo</label>
           <div className="signature-box">
@@ -671,381 +944,3 @@ export default function ReportForm() {
     </form>
   );
 }
-
-
-// import { useState } from "react";
-// import SignatureCanvas from "react-signature-canvas";
-// import { useRef } from "react";
-// import toast from "react-hot-toast";
-// import { createReport } from "../api/reportApi";
-// import "../styles/report.css";
-
-// const emptyRow = {
-//   sector: "",
-//   service: "",
-//   resource: "",
-//   peopleServed: "",
-//   employee: "",
-//   date: "",
-//   remark: "",
-// };
-
-// export default function ReportForm() {
-//   const [services, setServices] = useState(
-//     Array.from({ length: 7 }, () => ({ ...emptyRow })),
-//   );
-
-//   const [coordinatorName, setCoordinatorName] = useState("");
-//   const [coordinatorDate, setCoordinatorDate] = useState("");
-//   const [signature, setSignature] = useState("");
-//   const [uploadedFile, setUploadedFile] = useState(null);
-//   const [loading, setLoading] = useState(false);
-//   const sigRef = useRef(null);
-
-//   // const handleChange = (index, field, value) => {
-//   //   const updated = [...services];
-//   //   updated[index][field] = value;
-//   //   setServices(updated);
-//   // };
-
-//   const handleChange = (index, field, value) => {
-//     const updated = [...services];
-//     updated[index][field] = value;
-
-//     // If user is editing the LAST row and it now has content → add new row
-//     const isLastRow = index === services.length - 1;
-//     const rowHasData =
-//       updated[index].sector ||
-//       updated[index].service ||
-//       updated[index].resource ||
-//       updated[index].peopleServed ||
-//       updated[index].employee ||
-//       updated[index].date ||
-//       updated[index].remark;
-
-//     if (isLastRow && rowHasData) {
-//       updated.push({ ...emptyRow });
-//     }
-
-//     setServices(updated);
-//   };
-
-//   const handleFileChange = (e) => {
-//     if (e.target.files[0]) {
-//       setUploadedFile(e.target.files[0]);
-//       console.log("File selected:", e.target.files[0].name);
-//     }
-//   };
-
-//   const handleSubmit = async () => {
-//     setLoading(true);
-
-//     try {
-//       // const filtered = services.filter(
-//       //   (s) => s.sector || s.service || s.employee,
-//       // );
-
-//       const filtered = services.filter(
-//         (s) =>
-//           s.sector ||
-//           s.service ||
-//           s.resource ||
-//           s.peopleServed ||
-//           s.employee ||
-//           s.date ||
-//           s.remark,
-//       );
-
-//       // Log the data before sending
-//       console.log("Submitting with data:", {
-//         coordinatorName,
-//         coordinatorDate,
-//         signature,
-//         servicesCount: filtered.length,
-//         hasFile: !!uploadedFile,
-//         fileName: uploadedFile?.name,
-//       });
-
-//       // Create FormData
-//       const formData = new FormData();
-
-//       // IMPORTANT: These field names must match what backend expects
-//       formData.append("coordinatorName", coordinatorName);
-//       formData.append("coordinatorDate", coordinatorDate);
-//       formData.append("signature", signature);
-//       formData.append("services", JSON.stringify(filtered));
-
-//       // IMPORTANT: This field name must match the one in multer upload.single()
-//       // In your route, you have upload.single('uploadedFile')
-//       if (uploadedFile) {
-//         formData.append("uploadedFile", uploadedFile);
-//         console.log("Appending file:", uploadedFile.name);
-//       }
-
-//       // Log FormData contents (for debugging)
-//       for (let pair of formData.entries()) {
-//         console.log(
-//           pair[0] +
-//             ": " +
-//             (pair[0] === "uploadedFile" ? pair[1].name : pair[1]),
-//         );
-//       }
-
-//       const response = await createReport(formData);
-//       console.log("Success response:", response);
-
-//       toast.success("Gabaasni ergameera!");
-
-//       // Reset form
-//       setServices(Array.from({ length: 7 }, () => ({ ...emptyRow })));
-//       setCoordinatorName("");
-//       setCoordinatorDate("");
-//       setSignature("");
-//       setUploadedFile(null);
-
-//       // Reset file input
-//       const fileInput = document.querySelector('input[type="file"]');
-//       if (fileInput) fileInput.value = "";
-//     } catch (error) {
-//       console.error("Full error:", error);
-
-//       if (error.response) {
-//         console.error("Error data:", error.response.data);
-//         console.error("Error status:", error.response.status);
-//         toast.error(
-//           `Error: ${error.response?.data?.message || error.response?.status}`,
-//         );
-//       } else if (error.request) {
-//         console.error("No response:", error.request);
-//         toast.error("No response from server");
-//       } else {
-//         toast.error(`Error: ${error.message}`);
-//       }
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="report-container">
-//       <h2>Formaatii Gabaasaa</h2>
-
-//       {/* File upload section */}
-//       <div className="upload-box">
-//         {/* <div
-//         style={{
-//           margin: "20px 0",
-//           padding: "20px",
-//           border: "2px dashed #4CAF50",
-//           borderRadius: "8px",
-//           backgroundColor: "#f9f9f9",
-//         }}
-//       > */}
-//         <h3 style={{ color: "#4CAF50", marginBottom: "10px" }}>
-//           📄 Upload Word Report
-//         </h3>
-//         <p style={{ fontSize: "0.9em", color: "#666", marginBottom: "15px" }}>
-//           Upload an existing Word (.docx) report or generate one automatically.
-//         </p>
-//         {/* <input
-//           type="file"
-//           accept=".docx"
-//           onChange={handleFileChange}
-//           style={{ padding: "10px" }}
-//         /> */}
-
-//         <input
-//           id="fileUpload"
-//           type="file"
-//           accept=".docx"
-//           onChange={handleFileChange}
-//           hidden
-//         />
-
-//         <label htmlFor="fileUpload" className="primary-btn">
-//           Upload DOCX
-//         </label>
-
-//         {/*
-//         <h3 style={{ color: "#4CAF50", marginBottom: "10px" }}>
-//           📁 Upload Your Excel File (Optional)
-//         </h3>
-//         <p style={{ fontSize: "0.9em", color: "#666", marginBottom: "15px" }}>
-//           Upload an existing Excel file. The system will also generate one
-//           automatically from your form data.
-//         </p>
-//       <input
-//           type="file"
-//           accept=".xlsx,.xls,.csv"
-//           onChange={handleFileChange}
-//           style={{ padding: "10px" }}
-//         /> */}
-//         {uploadedFile && (
-//           <div
-//             style={{
-//               marginTop: "15px",
-//               padding: "10px",
-//               backgroundColor: "#e8f5e8",
-//               borderRadius: "4px",
-//               color: "#2e7d32",
-//             }}
-//           >
-//             ✅ Selected: {uploadedFile.name} (
-//             {(uploadedFile.size / 1024).toFixed(2)} KB)
-//           </div>
-//         )}
-//       </div>
-
-//       <table className="report-table">
-//         <thead>
-//           <tr>
-//             <th>Lakk</th>
-//             <th>Sektara</th>
-//             <th>Tajaajila</th>
-//             <th>Fooda</th>
-//             <th>Bayyina</th>
-//             <th>Hojjeta</th>
-//             <th>Guyyaa</th>
-//             <th>Ibsa</th>
-//           </tr>
-//         </thead>
-
-//         <tbody>
-//           {services.map((row, i) => (
-//             <tr key={i}>
-//               <td>{i + 1}</td>
-//               <td>
-//                 <input
-//                   value={row.sector}
-//                   onChange={(e) => handleChange(i, "sector", e.target.value)}
-//                 />
-//               </td>
-//               <td>
-//                 <input
-//                   value={row.service}
-//                   onChange={(e) => handleChange(i, "service", e.target.value)}
-//                 />
-//               </td>
-//               <td>
-//                 <input
-//                   value={row.resource}
-//                   onChange={(e) => handleChange(i, "resource", e.target.value)}
-//                 />
-//               </td>
-//               <td>
-//                 <input
-//                   type="number"
-//                   value={row.peopleServed}
-//                   onChange={(e) =>
-//                     handleChange(i, "peopleServed", e.target.value)
-//                   }
-//                 />
-//               </td>
-//               <td>
-//                 <input
-//                   value={row.employee}
-//                   onChange={(e) => handleChange(i, "employee", e.target.value)}
-//                 />
-//               </td>
-//               <td>
-//                 <input
-//                   type="date"
-//                   value={row.date}
-//                   onChange={(e) => handleChange(i, "date", e.target.value)}
-//                 />
-//               </td>
-//               <td>
-//                 <input
-//                   value={row.remark}
-//                   onChange={(e) => handleChange(i, "remark", e.target.value)}
-//                 />
-//               </td>
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
-
-//       <div className="footer-fields">
-//         <div>
-//           <label>Maqaa Qindeessaa</label>
-//           <input
-//             value={coordinatorName}
-//             onChange={(e) => setCoordinatorName(e.target.value)}
-//             required
-//           />
-//         </div>
-
-//         <div>
-//           <label>Guyyaa</label>
-//           <input
-//             type="date"
-//             value={coordinatorDate}
-//             onChange={(e) => setCoordinatorDate(e.target.value)}
-//             required
-//           />
-//         </div>
-
-//         <div>
-//           <label>Mallattoo </label>
-
-//           <div
-//             style={{
-//               border: "1px solid #ccc",
-//               borderRadius: "6px",
-//               padding: "10px",
-//               background: "#fff",
-//               // width: "260px",
-//               width: "100%",
-//               maxWidth: "260px",
-//             }}
-//           >
-//             <SignatureCanvas
-//               ref={sigRef}
-//               penColor="black"
-//               canvasProps={{
-//                 width: 240,
-//                 height: 120,
-//                 className: "sigCanvas",
-//               }}
-//               onEnd={() => {
-//                 const dataURL = sigRef.current.toDataURL("image/png");
-//                 setSignature(dataURL); // store base64 image
-//               }}
-//             />
-
-//             {/* <button
-//               type="button"
-//               onClick={() => {
-//                 sigRef.current.clear();
-//                 setSignature("");
-//               }}
-//               style={{
-//                 marginTop: "8px",
-//                 padding: "4px 10px",
-//                 fontSize: "12px",
-//                 cursor: "pointer",
-//               }}
-//             >
-//               Clear
-//             </button> */}
-
-//             <button
-//               type="button"
-//               className="primary-btn"
-//               onClick={() => {
-//                 sigRef.current.clear();
-//                 setSignature("");
-//               }}
-//             >
-//               Clear
-//             </button>
-//           </div>
-//         </div>
-//       </div>
-
-//       <button className="submit-btn" onClick={handleSubmit} disabled={loading}>
-//         {loading ? <Spinner size={18} /> : "Gabaasa Ergi"}
-//       </button>
-//     </div>
-//   );
-// }
