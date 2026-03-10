@@ -512,7 +512,7 @@ export default function ReportForm() {
   const [foddaaNumber, setFoddaaNumber] = useState("");
   const [employees, setEmployees] = useState([]);
   const sigRef = useRef(null);
-
+  
   // Auto-fill coordinator name with head's name from localStorage
   useEffect(() => {
     const headName = localStorage.getItem("name");
@@ -686,9 +686,10 @@ export default function ReportForm() {
         const servicesForDocx = filtered.map((service) => ({
           sector: service.sector,
           service: service.service,
-          resource: String(
-            foddaaNumber || localStorage.getItem("qindeessaa") || "1",
-          ),
+          // resource: String(
+          //   foddaaNumber || localStorage.getItem("qindeessaa") || "1",
+          // ),
+          resource: foddaaNumber || "1",
           peopleServed: service.peopleServed,
           employee: service.employee,
           date: service.date,
@@ -819,7 +820,7 @@ export default function ReportForm() {
                       onChange={(e) =>
                         handleChange(i, "service", e.target.value)
                       }
-                      placeholder="Tajaajila"
+                      // placeholder="Tajaajila"
                     />
                   </td>
 
@@ -836,7 +837,7 @@ export default function ReportForm() {
                       onChange={(e) =>
                         handleChange(i, "peopleServed", e.target.value)
                       }
-                      placeholder="0"
+                      // placeholder="0"
                       min="0"
                     />
                   </td>
@@ -878,7 +879,7 @@ export default function ReportForm() {
                       onChange={(e) =>
                         handleChange(i, "remark", e.target.value)
                       }
-                      placeholder="Ibsa"
+                      // placeholder="Ibsa"
                     />
                   </td>
                 </tr>
@@ -895,7 +896,7 @@ export default function ReportForm() {
             value={coordinatorName}
             onChange={(e) => setCoordinatorName(e.target.value)}
             required
-            placeholder="Maqaa guutaa"
+            // placeholder="Maqaa guutaa"
             className="coordinator-field"
           />
           <small className="field-hint">Auto-filled with your name</small>

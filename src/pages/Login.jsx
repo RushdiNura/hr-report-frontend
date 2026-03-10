@@ -23,6 +23,7 @@ export default function Login() {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("role", res.data.role);
       localStorage.setItem("name", res.data.name);
+      localStorage.setItem("qindeessaa", res.data.qindeessaa);
 
       toast.success("Welcome back!");
 
