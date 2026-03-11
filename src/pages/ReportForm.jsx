@@ -471,7 +471,7 @@ import "../styles/report.css";
 
 const API = "https://hr-report-backend.onrender.com/api";
 
-// Updated emptyRow - removed resource field
+
 const emptyRow = {
   sector: "",
   service: "",
@@ -481,20 +481,19 @@ const emptyRow = {
   remark: "",
 };
 
-// 12 Sectors (Seektara) options
 const SECTOR_OPTIONS = [
-  { value: "agriculture", label: "Qonnaa" },
-  { value: "education", label: "Barnoota" },
-  { value: "health", label: "Fayyaa" },
-  { value: "water", label: "Bishaan" },
-  { value: "road", label: "Daandii" },
-  { value: "electricity", label: "Elektirika" },
-  { value: "trade", label: "Daldalaa" },
-  { value: "finance", label: "Faayinaansi" },
-  { value: "youth", label: "Dargaggoota" },
-  { value: "women", label: "Dubartootaa" },
-  { value: "security", label: "Nageenya" },
-  { value: "administration", label: "Bulchiinsa" },
+  { value: "Qonnaa", label: "Qonnaa" },
+  { value: "Barnoota", label: "Barnoota" },
+  { value: "Fayyaa", label: "Fayyaa" },
+  { value: "Bishaan", label: "Bishaan" },
+  { value: "Daandii", label: "Daandii" },
+  { value: "Elektirikii", label: "Elektirikii" },
+  { value: "Daldala", label: "Daldala" },
+  { value: "Faayinaansi", label: "Faayinaansi" },
+  { value: "Dargaggoota", label: "Dargaggoota" },
+  { value: "Dubartoota", label: "Dubartoota" },
+  { value: "Nageenya", label: "Nageenya" },
+  { value: "Bulchiinsa", label: "Bulchiinsa" },
 ];
 
 export default function ReportForm() {
