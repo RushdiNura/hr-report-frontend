@@ -66,17 +66,17 @@ export default function Layout() {
     }
   };
 
-  const menuItems =
-    userRole === "hr"
-      ? [
-          { path: "/hr", label: "Dashboard", icon: LayoutDashboard },
-          { path: "/signup", label: "Create Qindeessaa", icon: UserPlus },
-          { path: "/heads", label: "Head Management", icon: UserCog },
-        ]
-      : [
-          { path: "/form", label: "New Report", icon: PlusCircle },
-          { path: "/employees", label: "Hojjataa", icon: Users },
-        ];
+ const menuItems =
+   userRole === "hr"
+     ? [
+         { path: "/hr", label: "Dashboard", icon: LayoutDashboard },
+         { path: "/hr/signup", label: "Create Qindeessaa", icon: UserPlus },
+         { path: "/hr/heads", label: "Head Management", icon: UserCog },
+       ]
+     : [
+         { path: "/form", label: "New Report", icon: PlusCircle },
+         { path: "/form/employees", label: "Hojjataa", icon: Users },
+       ];
 
   return (
     <div className="app-shell">

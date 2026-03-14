@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const SOCKET_URL = "https://hr-report-backend.onrender.com"; // Your backend URL
+const SOCKET_URL = "https://hr-report-backend.onrender.com"; 
 
 let socket = null;
 

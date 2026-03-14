@@ -13,7 +13,6 @@
   }
 }
 
-/* Stats Grid - Responsive */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -70,7 +69,6 @@
   line-height: 1.2;
 }
 
-/* Content Card */
 .content-card {
   background: white;
   border-radius: 16px;
@@ -111,7 +109,7 @@
   white-space: nowrap;
 }
 
-/* Fullscreen Loader */
+
 .fullscreen-loader {
   height: 70vh;
   display: flex;
@@ -119,7 +117,7 @@
   justify-content: center;
 }
 
-/* Orbit Spinner */
+
 .orbit-spinner-container {
   display: flex;
   flex-direction: column;
@@ -165,7 +163,6 @@
   animation: pulse 1.5s infinite;
 }
 
-/* No Results */
 .no-results {
   text-align: center;
   padding: 48px 24px;
@@ -173,7 +170,6 @@
   font-size: 14px;
 }
 
-/* Animations */
 @keyframes orbit-rotate-one {
   from {
     transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
@@ -207,9 +203,7 @@
   }
 }
 
-/* ========== RESPONSIVE DESIGN ========== */
 
-/* Tablet (768px - 1024px) */
 @media (max-width: 1024px) {
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -221,7 +215,6 @@
   }
 }
 
-/* Mobile (below 768px) */
 @media (max-width: 768px) {
   .stats-grid {
     grid-template-columns: 1fr;
@@ -265,7 +258,6 @@
   }
 }
 
-/* Small Mobile (below 480px) */
 @media (max-width: 480px) {
   .stats-grid {
     gap: 8px;
@@ -297,7 +289,6 @@
   }
 }
 
-/* Empty State - Professional Design */
 .empty-state {
   display: flex;
   flex-direction: column;
@@ -369,7 +360,6 @@
   color: #3b82f6;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .empty-state {
     padding: 48px 20px;
@@ -412,12 +402,10 @@
   }
 }
 
-/* Stats Container */
 .stats-container {
   margin-bottom: 30px;
 }
 
-/* Stats Header with Toggle Buttons */
 .stats-header {
   display: flex;
   justify-content: flex-end;
@@ -455,7 +443,6 @@
   color: white;
 }
 
-/* Make stat cards clickable */
 .stat-card-new.clickable {
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
@@ -466,7 +453,6 @@
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
 }
 
-/* Hint text showing the other value */
 .stat-hint {
   font-size: 11px;
   color: #94a3b8;
@@ -474,7 +460,6 @@
   margin-top: 2px;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .stats-header {
     justify-content: center;
@@ -489,7 +474,6 @@
   }
 }
 
-/* Connection status indicator */
 .connection-status {
   display: inline-flex;
   align-items: center;

@@ -3,7 +3,6 @@
   padding: 20px 0;
 }
 
-/* Page Header */
 .hm-page-header {
   display: flex;
   justify-content: space-between;
@@ -43,7 +42,6 @@
   font-weight: 500;
 }
 
-/* Filter Section */
 .hm-filter-section {
   display: flex;
   gap: 16px;
@@ -112,14 +110,12 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* Heads Grid */
 .hm-heads-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 24px;
 }
 
-/* Head Card */
 .hm-head-card {
   background: white;
   border-radius: 16px;
@@ -230,7 +226,6 @@
   display: inline-block;
 }
 
-/* Stats inside Head Card - PREFIXED */
 .hm-stats-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -300,7 +295,6 @@
   color: white;
 }
 
-/* Empty State */
 .hm-empty-state {
   grid-column: 1 / -1;
   text-align: center;
@@ -327,10 +321,8 @@
   margin-bottom: 20px;
 }
 
-/* Delete Modal */
 .hm-delete-modal-content {
   text-align: center;
-  /* padding: 20px 0; */
   padding: 8px 0;
 }
 
@@ -393,7 +385,6 @@
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
-/* Loading */
 .hm-loading-container {
   display: flex;
   flex-direction: column;
@@ -404,7 +395,6 @@
   color: #64748b;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .hm-page-header {
     flex-direction: column;
@@ -429,7 +419,6 @@
   }
 }
 
-/* Delete Modal Specific Styles - These override any conflicts */
 .delete-modal-content {
   text-align: center;
   padding: 16px 0;
@@ -511,12 +500,11 @@
   box-shadow: 0 8px 16px rgba(239, 68, 68, 0.4);
 }
 
-/* Ensure modal body has proper padding */
+
 .modal-body {
   padding: 24px !important;
 }
 
-/* Responsive */
 @media (max-width: 480px) {
   .delete-modal-actions {
     flex-direction: column-reverse;
@@ -537,7 +525,6 @@
   }
 }
 
-/* Filter Section - FIXED for mobile */
 .hm-filter-section {
   display: flex;
   gap: 16px;
@@ -549,7 +536,7 @@
 .hm-search-wrapper {
   position: relative;
   flex: 2;
-  min-width: 200px; /* Reduced from 280px */
+  min-width: 200px; 
   max-width: 100%;
   width: 100%;
 }
@@ -583,7 +570,7 @@
 .hm-filter-wrapper {
   position: relative;
   flex: 1;
-  min-width: 160px; /* Reduced from 200px */
+  min-width: 160px; 
   max-width: 100%;
   width: 100%;
 }
@@ -616,7 +603,6 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* Responsive - FIXED for mobile */
 @media (max-width: 768px) {
   .hm-page-header {
     flex-direction: column;
@@ -640,12 +626,12 @@
   .hm-search-wrapper,
   .hm-filter-wrapper {
     width: 100%;
-    min-width: 100%; /* Full width on mobile */
+    min-width: 100%; 
   }
 
   .hm-search-input,
   .hm-filter-select {
-    font-size: 16px; /* Prevents zoom on iOS */
+    font-size: 16px; 
     padding: 14px 16px 14px 45px;
     width: 100%;
   }
@@ -660,7 +646,6 @@
   }
 }
 
-/* Extra small devices */
 @media (max-width: 480px) {
   .hm-filter-section {
     gap: 8px;

@@ -11,8 +11,20 @@ import EmployeeManagement from "./pages/EmployeeManagement";
 function PrivateRoute({ children, role }) {
   const token = localStorage.getItem("token");
   const userRole = localStorage.getItem("role");
+
   if (!token) return <Navigate to="/" replace />;
-  if (role && role !== userRole) return <Navigate to="/" replace />;
+
+  // Check if user has the required role
+  if (role && role !== userRole) {
+    // Redirect based on actual role instead of showing 404
+    if (userRole === "hr") {
+      return <Navigate to="/hr" replace />;
+    } else if (userRole === "head") {
+      return <Navigate to="/form" replace />;
+    }
+    return <Navigate to="/" replace />;
+  }
+
   return children;
 }
 
@@ -23,29 +35,34 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Login />} />
 
+        {/* HR Routes - These come FIRST */}
         <Route
+          path="/hr"
           element={
             <PrivateRoute role="hr">
               <Layout />
             </PrivateRoute>
           }
         >
-          <Route path="/hr" element={<HRDashboard />} />
-          <Route path="/heads" element={<HeadManagement />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route index element={<HRDashboard />} />
+          <Route path="heads" element={<HeadManagement />} />
+          <Route path="signup" element={<Signup />} />
         </Route>
 
+        {/* Head Routes - These come SECOND */}
         <Route
+          path="/form"
           element={
             <PrivateRoute role="head">
               <Layout />
             </PrivateRoute>
           }
         >
-          <Route path="/form" element={<ReportForm />} />
-          <Route path="/employees" element={<EmployeeManagement />} />
+          <Route index element={<ReportForm />} />
+          <Route path="employees" element={<EmployeeManagement />} />
         </Route>
 
+        {/* Catch-all redirect - This should be last */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>

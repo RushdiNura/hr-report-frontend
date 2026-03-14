@@ -51,7 +51,6 @@ export default function ReportForm() {
   const [employees, setEmployees] = useState([]);
   const sigRef = useRef(null);
   
-  // Auto-fill coordinator name with head's name from localStorage
   useEffect(() => {
     const headName = localStorage.getItem("name");
     if (headName) {
@@ -59,7 +58,6 @@ export default function ReportForm() {
     }
   }, []);
 
-  // Fetch employees on component mount
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
@@ -224,9 +222,6 @@ export default function ReportForm() {
         const servicesForDocx = filtered.map((service) => ({
           sector: service.sector,
           service: service.service,
-          // resource: String(
-          //   foddaaNumber || localStorage.getItem("qindeessaa") || "1",
-          // ),
           resource: foddaaNumber || "1",
           peopleServed: service.peopleServed,
           employee: service.employee,
@@ -234,7 +229,7 @@ export default function ReportForm() {
           remark: service.remark,
         }));
 
-        console.log("Sending to backend:", servicesForDocx); // Debug
+        console.log("Sending to backend:", servicesForDocx); 
 
         formData.append("services", JSON.stringify(servicesForDocx));
       }
@@ -242,7 +237,7 @@ export default function ReportForm() {
       await createReport(formData);
       toast.success("Gabaasni milkaa'inaan ergameera!");
 
-      // Reset form
+    
       setServices(Array.from({ length: 5 }, () => ({ ...emptyRow })));
       setCoordinatorName(localStorage.getItem("name") || "");
       setCoordinatorDate("");
@@ -309,7 +304,7 @@ export default function ReportForm() {
         )}
       </div>
 
-      {/* Table - Hidden if file is selected */}
+   
       {!uploadedFile && (
         <div className="table-wrapper">
           <table className="report-table">
@@ -330,7 +325,7 @@ export default function ReportForm() {
                 <tr key={i}>
                   <td className="row-number">{i + 1}</td>
 
-                  {/* Seektara - Select */}
+                
                   <td>
                     <div className="select-wrapper">
                       <select
@@ -351,7 +346,7 @@ export default function ReportForm() {
                     </div>
                   </td>
 
-                  {/* Tajaajila - Input */}
+              
                   <td>
                     <input
                       value={row.service}
@@ -362,12 +357,10 @@ export default function ReportForm() {
                     />
                   </td>
 
-                  {/* Foddaa - Display only (auto-filled) */}
                   <td>
                     <div className="foddaa-display">{foddaaNumber || "1"}</div>
                   </td>
 
-                  {/* Baayyina - Input */}
                   <td>
                     <input
                       type="number"
@@ -380,7 +373,7 @@ export default function ReportForm() {
                     />
                   </td>
 
-                  {/* Hojjetaa - Select */}
+                
                   <td>
                     <div className="select-wrapper">
                       <select
@@ -401,7 +394,6 @@ export default function ReportForm() {
                     </div>
                   </td>
 
-                  {/* Guyyaa - Input */}
                   <td>
                     <input
                       type="date"
@@ -410,7 +402,7 @@ export default function ReportForm() {
                     />
                   </td>
 
-                  {/* Ibsa - Input */}
+          
                   <td>
                     <input
                       value={row.remark}

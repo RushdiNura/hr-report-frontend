@@ -11,7 +11,7 @@ const API = "https://hr-report-backend.onrender.com";
 export default function CreateUser() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // Toggle state
+  const [showPassword, setShowPassword] = useState(false); 
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -67,7 +67,6 @@ export default function CreateUser() {
           required
         />
 
-        {/* Professional Password Field */}
         <div className="password-input-wrapper">
           <input
             name="password"

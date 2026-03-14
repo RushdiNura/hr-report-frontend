@@ -1,11 +1,11 @@
 
 :root {
-  --primary: #0b5ed7; /* Updated to match your specific blue */
+  --primary: #0b5ed7; 
   --primary-hover: #0a58ca;
   --slate-900: #0f172a;
   --slate-600: #475569;
   --slate-100: #f1f5f9;
-  --border: #d1d5db; /* Updated to match your border color */
+  --border: #d1d5db; 
 }
 
 .login-wrapper {
@@ -18,15 +18,14 @@
 }
 
 .login-card {
-  width: 360px; /* Exact width from your request */
+  width: 360px; 
   padding: 35px;
   background: white;
   border-radius: 12px;
-  /* Removed complex shadow to remove "floating" effect */
   border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  gap: 14px; /* Exact gap from your request */
+  gap: 14px; 
 }
 
 .login-header {
@@ -49,7 +48,7 @@
 
 .login-card input {
   width: 100%;
-  padding: 11px; /* Exact padding from your request */
+  padding: 11px; 
   border: 1px solid var(--border);
   border-radius: 6px;
   font-size: 14px;
@@ -65,7 +64,7 @@
 
 .login-card button {
   width: 100%;
-  padding: 11px; /* Exact padding from your request */
+  padding: 11px; 
   background: linear-gradient(135deg, var(--primary), var(--primary-hover));
   color: white;
   border: none;
@@ -82,7 +81,6 @@
 
 .login-card button:hover {
   background: var(--primary-hover);
-  /* Removed transform to remove "floating" effect */
 }
 
 .login-card button:disabled {
@@ -90,18 +88,15 @@
   cursor: not-allowed;
 }
 
-/* Password Field Container */
 .password-input-wrapper {
   position: relative;
   width: 100%;
 }
 
-/* Ensure text doesn't overlap the icon */
 .password-input-wrapper input {
   padding-right: 45px !important;
 }
 
-/* Professional Toggle Button */
 .password-toggle-btn {
   position: absolute;
   right: 12px;
