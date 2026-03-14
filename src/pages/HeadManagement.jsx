@@ -105,7 +105,7 @@ const handleDeleteHead = async () => {
     return;
   }
 
-  console.log("Deleting head:", selectedHead); // Debug log
+  console.log("Deleting head:", selectedHead); 
 
   if (!selectedHead._id) {
     toast.error("Invalid head data - missing ID");
@@ -117,7 +117,7 @@ const handleDeleteHead = async () => {
 
   try {
     const token = localStorage.getItem("token");
-    console.log("Deleting head with ID:", selectedHead._id); // Debug log
+    console.log("Deleting head with ID:", selectedHead._id); 
 
     const response = await axios.delete(
       `${API}/auth/heads/${selectedHead._id}`,
@@ -126,14 +126,14 @@ const handleDeleteHead = async () => {
       },
     );
 
-    console.log("Delete response:", response.data); // Debug log
+    console.log("Delete response:", response.data); 
     toast.success("Head user deleted successfully");
     setShowDeleteModal(false);
     setSelectedHead(null);
-    fetchHeads(); // Refresh the list
+    fetchHeads(); 
   } catch (error) {
     console.error("Error deleting head:", error);
-    console.error("Error response:", error.response?.data); // Debug log
+    console.error("Error response:", error.response?.data); 
 
     if (error.response?.status === 401) {
       toast.error("Your session has expired. Please login again.");
@@ -148,7 +148,7 @@ const handleDeleteHead = async () => {
     }
   }
 };
-  // Filter heads based on search and department
+ 
   const filteredHeads = heads.filter((head) => {
     const matchesSearch =
       searchTerm === "" ||
